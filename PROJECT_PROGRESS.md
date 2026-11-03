@@ -106,12 +106,27 @@
   - `POST /api/v1/billing/webhooks/paystack` (HMAC-SHA512 verified, idempotent webhook processor for `charge.success`, `subscription.create`, `subscription.disable`, and `invoice.payment_failed`)
 - [x] 100% automated test coverage (10 feature tests with 105 assertions passing in `BillingTest.php`, 41 total API tests with 212 assertions)
 
-### Phase 7: Next.js SaaS Dashboard & Developer Portal
-- [ ] Public landing page & marketing site
-- [ ] Authentication, organization & business switcher
-- [ ] Business analytics dashboards & Pareto visualizations
-- [ ] AI recommendations & chat interface
-- [ ] API keys & developer documentation
+### Phase 7: Next.js SaaS Dashboard & Developer Portal (`apps/dashboard`)
+- [x] Next.js 15 App Router architecture with strict TypeScript, Tailwind CSS, and Lucide React
+- [x] Workspace integration with `@charlie/advisor-types`
+- [x] Reusable responsive UI components:
+  - `Sidebar`: navigation with plan status, snapshot consumption meter, and active route pills
+  - `Header`: organization & business profile selector, reporting period pill, and evidence verification status
+  - `MetricCard`: key indicator card with minor-unit formatted currency, change percentage indicator, and subtitle
+  - `ParetoBarChart`: 80/20 concentration visualizer with vital few contributor identification and cumulative thresholds
+  - `RecommendationCard`: AI strategic action card with category badges, priority colors, numerical evidence, and status cycle buttons (`new`, `reviewing`, `accepted`, `dismissed`)
+  - `ChatInterface`: conversational AI advisory interface with suggested queries, zero-hallucination indicators, and clickable snapshot metric citations
+  - `ApiKeyTable`: scoped key generator, permission scopes, prefix display, copyable plaintext secret reveal banner, and key revocation
+  - `UsageMeter`: animated progress meters for snapshot quotas, token consumption, and business limits
+  - `PlanCard`: subscription tiers (Starter, Growth, Pro, Platform) with feature checklists and Paystack checkout trigger
+- [x] Dedicated App Router views:
+  - `/` (Executive Performance Summary & KPI overview)
+  - `/recommendations` (AI Advisory playbooks with category and status filtering)
+  - `/pareto` (Interactive 80/20 distribution with HHI concentration index, Gini coefficient, and configurable threshold slider)
+  - `/chat` (Full-height conversational AI advisory experience)
+  - `/developer` (API key provisioning and TypeScript/Laravel/cURL code snippets)
+  - `/billing` (Usage meters, plan upgrades, and Paystack checkout integration)
+- [x] Production build and strict TypeScript typecheck passing 100% (`next build` 9/9 pages generated)
 
 ### Phase 8: Integrations, E2E Verification & Packaging
 - [ ] `@charlie/advisor-react` hooks & UI components

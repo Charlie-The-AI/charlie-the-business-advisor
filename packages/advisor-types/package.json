@@ -1,6 +1,6 @@
 {
   "name": "@charlie-the-ai/advisor-types",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Shared TypeScript data contracts, domain models, and Zod schemas for Charlie the Business Advisor",
   "type": "module",
   "main": "./dist/index.js",

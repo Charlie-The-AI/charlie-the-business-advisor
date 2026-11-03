@@ -1,6 +1,6 @@
 {
   "name": "@charlie-the-ai/analytics-adapters",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Data mapping and normalization adapters for Charlie the Business Advisor",
   "type": "module",
   "main": "./dist/index.js",

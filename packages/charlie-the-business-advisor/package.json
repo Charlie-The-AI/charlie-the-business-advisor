@@ -1,6 +1,6 @@
 {
   "name": "charlie-the-business-advisor",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Your AI-Powered Business Growth Companion — Open-Source Business Analytics Engine",
   "type": "module",
   "main": "./dist/index.js",

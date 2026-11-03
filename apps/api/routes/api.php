@@ -16,8 +16,21 @@ Route::prefix('v1')->group(function () {
         ]);
     });
 
+    // Public Billing Plans Catalog
+    Route::get('/billing/plans', [\App\Http\Controllers\BillingController::class, 'plans']);
+
+    // Paystack Webhooks (HMAC-SHA512 verified)
+    Route::post('/billing/webhooks/paystack', [\App\Http\Controllers\BillingWebhookController::class, 'handlePaystack']);
+
     // Authenticated API Routes
     Route::middleware('auth.api_key')->group(function () {
+        // Billing & Subscription Management
+        Route::get('/billing/subscription', [\App\Http\Controllers\BillingController::class, 'subscription'])
+            ->middleware('auth.api_key:billing:read');
+        Route::post('/billing/checkout', [\App\Http\Controllers\BillingController::class, 'checkout'])
+            ->middleware('auth.api_key:billing:write');
+        Route::post('/billing/cancel', [\App\Http\Controllers\BillingController::class, 'cancel'])
+            ->middleware('auth.api_key:billing:write');
         // Analytics Snapshots Ingestion & Retrieval
         Route::post('/analytics/snapshots', [SnapshotIngestionController::class, 'store'])
             ->middleware('auth.api_key:snapshots:write');

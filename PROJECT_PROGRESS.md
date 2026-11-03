@@ -84,10 +84,27 @@
   - `POST /api/v1/chat/conversations/{conversationId}/messages` (send question, ground with snapshot analytics, enforce tenant isolation, and record token usage)
 - [x] 100% automated test coverage (31 API feature & unit tests passing with 107 assertions)
 
-### Phase 6: Subscriptions & Billing
-- [ ] Plan tiers (Free, Growth, Pro, Platform)
-- [ ] Paystack integration & webhook verification
-- [ ] Concurrency-safe usage metering
+### Phase 6: Subscriptions & Billing (Paystack & Entitlements)
+- [x] Subscription plans configuration (`config/billing.php`) with 4 distinct tiers: Free, Growth, Pro, and Platform
+- [x] Payment Gateway Abstraction (`BillingGatewayInterface`):
+  - `PaystackBillingGateway`: transaction checkout initialization (`POST /transaction/initialize`), subscription disabling, and HMAC-SHA512 webhook signature verification
+  - `MockBillingGateway`: deterministic checkout references and signature validation for testing and offline development
+  - `BillingGatewayManager`: driver resolution and dynamic test swapping
+- [x] Database migrations & models:
+  - `subscriptions` table (`2026_03_01_000012_create_subscriptions_table.php`) with period dates, plan codes, gateway customer/subscription codes, and cancellation tracking
+  - `webhook_events` table (`2026_03_01_000013_create_webhook_events_table.php`) for idempotent deduplication
+  - `Subscription` and `WebhookEvent` Eloquent models with organization associations
+- [x] Plan Entitlements & Metering Service (`PlanEntitlementService`):
+  - Real-time usage tracking (snapshot count, AI token consumption, active businesses count)
+  - Quota enforcement and unlimited-tier handling (`-1`)
+  - Subscription activation, upgrades, cancellations, and audit logging
+- [x] Billing API Endpoints:
+  - `GET /api/v1/billing/plans` (public catalog of plans, pricing, and features)
+  - `GET /api/v1/billing/subscription` (organization's current plan, quotas, and real-time usage)
+  - `POST /api/v1/billing/checkout` (session initiation with Paystack)
+  - `POST /api/v1/billing/cancel` (subscription cancellation and plan reversion)
+  - `POST /api/v1/billing/webhooks/paystack` (HMAC-SHA512 verified, idempotent webhook processor for `charge.success`, `subscription.create`, `subscription.disable`, and `invoice.payment_failed`)
+- [x] 100% automated test coverage (10 feature tests with 105 assertions passing in `BillingTest.php`, 41 total API tests with 212 assertions)
 
 ### Phase 7: Next.js SaaS Dashboard & Developer Portal
 - [ ] Public landing page & marketing site

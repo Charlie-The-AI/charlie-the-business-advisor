@@ -55,16 +55,60 @@ class Organization extends Model
         return $this->hasMany(AuditLog::class);
     }
 
+    public function subscriptions(): HasMany
+    {
+        return $this->hasMany(Subscription::class);
+    }
+
+    public function latestSubscription()
+    {
+        return $this->hasOne(Subscription::class)->latestOfMany();
+    }
+
     /**
-     * Checks whether organization has exceeded monthly snapshot ingestion quota.
+     * Checks whether organization has available monthly snapshot ingestion quota.
      */
     public function hasSnapshotQuota(): bool
     {
+        if ($this->monthly_snapshot_quota === -1) {
+            return true; // Unlimited
+        }
+
         $currentMonthCount = $this->usageRecords()
             ->where('metric', 'snapshot_ingestion')
             ->where('created_at', '>=', now()->startOfMonth())
             ->count();
 
         return $currentMonthCount < $this->monthly_snapshot_quota;
+    }
+
+    /**
+     * Checks whether organization has available AI tokens quota.
+     */
+    public function hasAiTokensQuota(int $estimatedTokens = 1000): bool
+    {
+        if ($this->monthly_ai_tokens_quota === -1) {
+            return true; // Unlimited
+        }
+
+        $currentTokensUsed = (int) $this->usageRecords()
+            ->where('metric', 'ai_chat_message')
+            ->where('created_at', '>=', now()->startOfMonth())
+            ->sum('quantity');
+
+        return ($currentTokensUsed + $estimatedTokens) <= $this->monthly_ai_tokens_quota;
+    }
+
+    /**
+     * Checks whether organization can create an additional business profile.
+     */
+    public function canCreateBusiness(): bool
+    {
+        $planConfig = config("billing.plans.{$this->plan}.quotas.max_businesses", 1);
+        if ($planConfig === -1) {
+            return true;
+        }
+
+        return $this->businesses()->count() < $planConfig;
     }
 }

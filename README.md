@@ -1,109 +1,121 @@
 # Charlie the Business Advisor 🎩📈
 
-> **Your AI-Powered Business Growth Companion.**
+> **Open-Source Business Analytics Engine & Developer SDK**
 >
-> An open-source business intelligence and analytics engine paired with an AI-powered advisory SaaS.
+> Deterministic business intelligence, Pareto (80/20) concentration analysis, RFM customer segmentation, and financial metrics in TypeScript.
 
 [![CI](https://github.com/charlie/charlie-the-business-advisor/actions/workflows/ci.yml/badge.svg)](https://github.com/charlie/charlie-the-business-advisor/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![npm version](https://img.shields.io/badge/npm-0.1.0-orange.svg)](https://www.npmjs.com/package/charlie-the-business-advisor)
 
 ---
 
-## Architecture Overview
+## Overview
 
-Charlie operates on a **hybrid open-source + SaaS architecture**:
+**Charlie the Business Advisor** is a framework-agnostic TypeScript analytics engine. It runs in any environment (Node.js, browsers, Next.js, Edge runtimes, mobile apps) with **zero cloud dependencies** and **no mandatory external services**.
 
-1. **Product A: Open-Source Analytics Engine (`@charlie/analytics-core`)**
-   - Free, zero-dependency, deterministic TypeScript analytics engine.
-   - Runs in Node.js, Next.js, Edge runtimes, browsers, and mobile runtimes.
-   - Computes sales recognition, Pareto 80/20 distributions, RFM customer segmentation, cohort retention, product margins, trend anomalies, and standardized analytics snapshots.
-   - Requires zero network calls and no Charlie account.
-
-2. **Product B: Paid AI Business Advisory SaaS**
-   - Multi-tenant cloud backend built with Laravel & PostgreSQL.
-   - Ingests deterministic snapshots and generates evidence-grounded recommendations.
-   - Conversational AI business advisor with tool-calling capabilities.
-   - Subscription lifecycle management and Paystack billing integration.
+Key capabilities:
+- **Deterministic Financial Analytics**: Integer minor-unit arithmetic prevents floating-point rounding errors across sales, revenues, and discounts.
+- **Pareto Concentration Diagnostics**: Compute 80/20 revenue concentration curves across products, categories, and customer cohorts.
+- **RFM Customer Segmentation**: Segment customer bases into Champions, Loyal, At-Risk, and Inactive buckets with actionable thresholds.
+- **Framework Adapters**: Transform disparate data schemas (Eloquent, Postgres, CSV, JSON) into standardized, typed analytics snapshots.
+- **React UI Integration**: React hooks and visualization components for building dashboards with minimal boilerplate.
 
 ---
 
-## Monorepo Layout
+## Packages in This Monorepo
 
-```text
-charlie-the-business-advisor/
-├── apps/
-│   ├── api/               # Laravel SaaS Backend (Multi-tenant, queue workers, AI orchestrator)
-│   ├── dashboard/         # Next.js App Router Web Application
-│   ├── docs/              # Mintlify/Nextra Developer Documentation
-│   └── playground/        # Local interactive developer playground
-│
-├── packages/
-│   ├── advisor-types/     # Shared data contracts, Zod schemas & models
-│   ├── analytics-core/    # Core deterministic analytics engine
-│   ├── analytics-adapters/# Data normalization and mapping utilities
-│   ├── advisor-sdk/       # Official TypeScript client for SaaS API
-│   ├── advisor-react/     # React hooks & UI components
-│   └── charlie-the-business-advisor/ # Public umbrella npm package
-│
-├── examples/
-│   ├── nextjs-integration/
-│   ├── nodejs-integration/
-│   └── laravel-integration/
-│
-├── docs/
-│   └── architecture/      # Architecture Decision Records (ADRs) & Specs
-│
-└── infrastructure/        # Docker Compose & service definitions
-```
+| Package | npm Package | Description |
+| :--- | :--- | :--- |
+| **`charlie-the-business-advisor`** | `charlie-the-business-advisor` | Unified developer entry point and high-level client |
+| **`packages/analytics-core`** | `@charlie/analytics-core` | Pure deterministic analytics engine and algorithms |
+| **`packages/advisor-types`** | `@charlie/advisor-types` | Zod schemas and TypeScript data contracts |
+| **`packages/analytics-adapters`**| `@charlie/analytics-adapters` | Data normalization adapters for databases and APIs |
+| **`packages/advisor-react`** | `@charlie/advisor-react` | React 19 hooks and UI components for web apps |
 
 ---
 
-## Quick Start (Open-Source Analytics)
+## Quick Start
+
+### Installation
 
 ```bash
+# Unified package
 npm install charlie-the-business-advisor
-# or
-pnpm add charlie-the-business-advisor
+
+# Or install individual modular packages:
+npm install @charlie/analytics-core @charlie/advisor-types
 ```
+
+### Basic Usage
 
 ```typescript
-import { Charlie } from "charlie-the-business-advisor";
+import { CharlieAdvisor } from 'charlie-the-business-advisor';
 
-const charlie = new Charlie();
-
-const report = charlie.analyze({
-  currency: "NGN",
-  orders: [
-    {
-      id: "ord_001",
-      customerId: "cust_101",
-      createdAt: "2026-03-01T10:00:00Z",
-      status: "completed",
-      totalMinorUnits: 2500000, // ₦25,000.00
-      subtotalMinorUnits: 2500000,
-      currency: "NGN",
-      items: [
-        {
-          id: "item_1",
-          productId: "prod_widget_a",
-          productName: "Premium Ergonomic Chair",
-          quantity: 1,
-          unitPriceMinorUnits: 2500000,
-          totalPriceMinorUnits: 2500000,
-          unitCostMinorUnits: 1500000, // ₦15,000.00 COGS
-        }
-      ]
-    }
-  ]
+const advisor = new CharlieAdvisor({
+  currency: 'USD',
+  timezone: 'UTC',
 });
 
-console.log(report.sales.summary.netRevenueFormatted); // ₦25,000.00
-console.log(report.pareto.topContributors);
-console.log(report.customers.retention.repeatPurchaseRate);
+const snapshot = advisor.generateSnapshot({
+  businessId: 'biz_01',
+  period: {
+    startDate: '2026-03-01T00:00:00Z',
+    endDate: '2026-03-31T23:59:59Z',
+  },
+  transactions: [
+    {
+      id: 'tx_01',
+      businessId: 'biz_01',
+      orderId: 'ord_101',
+      customerId: 'cust_abc',
+      amount: 19900, // $199.00 in minor units (cents)
+      currency: 'USD',
+      timestamp: '2026-03-15T10:00:00Z',
+      status: 'completed',
+      items: [
+        {
+          productId: 'prod_1',
+          name: 'Annual Subscription',
+          quantity: 1,
+          unitPrice: 19900,
+          totalPrice: 19900,
+        },
+      ],
+    },
+  ],
+});
+
+console.log('Total Revenue:', snapshot.metrics.revenue.total); // 19900
+console.log('Order Count:', snapshot.metrics.orders.count);   // 1
+console.log('Pareto Top 20%:', snapshot.pareto.topProducts);
 ```
+
+---
+
+## Integration Examples
+
+Explore working sample applications in [`examples/`](examples/):
+- **[`examples/nodejs-integration`](examples/nodejs-integration/)**: REST API processing transaction feeds with Express and Charlie.
+- **[`examples/nextjs-integration`](examples/nextjs-integration/)**: Next.js App Router app using `@charlie/advisor-react` hooks and Pareto visualizations.
+- **[`examples/laravel-integration`](examples/laravel-integration/)**: Exporting Laravel Eloquent transactions to Charlie analytics snapshots.
 
 ---
 
 ## Documentation
 
-Full architectural decisions, integration guides, and API references are documented in [docs/architecture/](docs/architecture/).
+- [Getting Started Guide](docs/getting-started/README.md)
+- [Framework Integration Guides](docs/integrations/README.md)
+- [Architecture & Decimal Arithmetic Decisions](docs/architecture/ARCHITECTURE.md)
+
+---
+
+## Contributing
+
+We welcome community contributions! Please review [CONTRIBUTING.md](CONTRIBUTING.md) and our [Code Guidelines](CONTRIBUTING.md#code-guidelines).
+
+---
+
+## License
+
+[MIT](LICENSE) © 2026 Charlie the Business Advisor Contributors

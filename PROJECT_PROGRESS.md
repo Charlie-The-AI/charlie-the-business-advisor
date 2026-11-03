@@ -58,82 +58,11 @@
 - [x] Working Node.js integration example in `examples/nodejs-integration`
 - [x] 100% test coverage across all packages (31 automated unit & integration tests passing)
 
-### Phase 4: Multi-Tenant SaaS Backend (Laravel 12)
-- [x] Multi-tenant database migrations & models (`organizations`, `businesses`, `organization_members`, `api_keys`, `analytics_snapshots`, `recommendation_jobs`, `recommendations`, `usage_records`, `audit_logs`)
-- [x] Scoped API key authentication middleware (`cta_live_...` / `cta_test_...` with SHA-256 secret hashing)
-- [x] Strict tenant scoping & cross-tenant access prevention
-- [x] Snapshot ingestion endpoint (`POST /v1/analytics/snapshots`) with idempotency key deduplication & monthly quota enforcement
-- [x] Background queue recommendation processing (`GenerateRecommendationsJob`)
-- [x] Recommendation lifecycle endpoints (`/v1/recommendations/generate`, `/v1/recommendations/jobs/{id}`, `/v1/businesses/{id}/recommendations`, status updates)
-- [x] Scoped API key management endpoints (`GET /v1/api-keys`, `POST /v1/api-keys`, `DELETE /v1/api-keys/{id}`)
-- [x] 100% automated feature test suite passing (22 feature & unit tests, 78 assertions)
-
-### Phase 5: AI Advisory Engine & Natural Language Business Chat
-- [x] Provider abstraction (`AiProviderInterface`) & production OpenAI implementation (`gpt-4o-mini` / `gpt-4o`) with structured JSON schema outputs
-- [x] Mock AI provider for deterministic evaluation and offline CI testing
-- [x] Grounding Verifier (`GroundingVerifier`):
-  - Numerical evidence validation against ingestion snapshots with tolerance checks
-  - Guard against hallucinated business metrics and nonexistent source fields (`GroundingException`)
-  - Strict guardrail blocking unauthorized financial performance guarantees
-  - Prompt injection sanitization for untrusted user/business inputs
-- [x] Recommendation generation pipeline integrated into `GenerateRecommendationsJob` with audit tracking and token cost estimation
-- [x] Multi-turn conversational AI Business Chat (`AiChatController`):
-  - `POST /api/v1/businesses/{businessId}/chat/conversations` (create scoped conversation)
-  - `GET /api/v1/businesses/{businessId}/chat/conversations` (list conversations)
-  - `GET /api/v1/chat/conversations/{conversationId}/messages` (retrieve message history)
-  - `POST /api/v1/chat/conversations/{conversationId}/messages` (send question, ground with snapshot analytics, enforce tenant isolation, and record token usage)
-- [x] 100% automated test coverage (31 API feature & unit tests passing with 107 assertions)
-
-### Phase 6: Subscriptions & Billing (Paystack & Entitlements)
-- [x] Subscription plans configuration (`config/billing.php`) with 4 distinct tiers: Free, Growth, Pro, and Platform
-- [x] Payment Gateway Abstraction (`BillingGatewayInterface`):
-  - `PaystackBillingGateway`: transaction checkout initialization (`POST /transaction/initialize`), subscription disabling, and HMAC-SHA512 webhook signature verification
-  - `MockBillingGateway`: deterministic checkout references and signature validation for testing and offline development
-  - `BillingGatewayManager`: driver resolution and dynamic test swapping
-- [x] Database migrations & models:
-  - `subscriptions` table (`2026_03_01_000012_create_subscriptions_table.php`) with period dates, plan codes, gateway customer/subscription codes, and cancellation tracking
-  - `webhook_events` table (`2026_03_01_000013_create_webhook_events_table.php`) for idempotent deduplication
-  - `Subscription` and `WebhookEvent` Eloquent models with organization associations
-- [x] Plan Entitlements & Metering Service (`PlanEntitlementService`):
-  - Real-time usage tracking (snapshot count, AI token consumption, active businesses count)
-  - Quota enforcement and unlimited-tier handling (`-1`)
-  - Subscription activation, upgrades, cancellations, and audit logging
-- [x] Billing API Endpoints:
-  - `GET /api/v1/billing/plans` (public catalog of plans, pricing, and features)
-  - `GET /api/v1/billing/subscription` (organization's current plan, quotas, and real-time usage)
-  - `POST /api/v1/billing/checkout` (session initiation with Paystack)
-  - `POST /api/v1/billing/cancel` (subscription cancellation and plan reversion)
-  - `POST /api/v1/billing/webhooks/paystack` (HMAC-SHA512 verified, idempotent webhook processor for `charge.success`, `subscription.create`, `subscription.disable`, and `invoice.payment_failed`)
-- [x] 100% automated test coverage (10 feature tests with 105 assertions passing in `BillingTest.php`, 41 total API tests with 212 assertions)
-
-### Phase 7: Next.js SaaS Dashboard & Developer Portal (`apps/dashboard`)
-- [x] Next.js 15 App Router architecture with strict TypeScript, Tailwind CSS, and Lucide React
-- [x] Workspace integration with `@charlie/advisor-types`
-- [x] Reusable responsive UI components:
-  - `Sidebar`: navigation with plan status, snapshot consumption meter, and active route pills
-  - `Header`: organization & business profile selector, reporting period pill, and evidence verification status
-  - `MetricCard`: key indicator card with minor-unit formatted currency, change percentage indicator, and subtitle
-  - `ParetoBarChart`: 80/20 concentration visualizer with vital few contributor identification and cumulative thresholds
-  - `RecommendationCard`: AI strategic action card with category badges, priority colors, numerical evidence, and status cycle buttons (`new`, `reviewing`, `accepted`, `dismissed`)
-  - `ChatInterface`: conversational AI advisory interface with suggested queries, zero-hallucination indicators, and clickable snapshot metric citations
-  - `ApiKeyTable`: scoped key generator, permission scopes, prefix display, copyable plaintext secret reveal banner, and key revocation
-  - `UsageMeter`: animated progress meters for snapshot quotas, token consumption, and business limits
-  - `PlanCard`: subscription tiers (Starter, Growth, Pro, Platform) with feature checklists and Paystack checkout trigger
-- [x] Dedicated App Router views:
-  - `/` (Executive Performance Summary & KPI overview)
-  - `/recommendations` (AI Advisory playbooks with category and status filtering)
-  - `/pareto` (Interactive 80/20 distribution with HHI concentration index, Gini coefficient, and configurable threshold slider)
-  - `/chat` (Full-height conversational AI advisory experience)
-  - `/developer` (API key provisioning and TypeScript/Laravel/cURL code snippets)
-  - `/billing` (Usage meters, plan upgrades, and Paystack checkout integration)
-- [x] Production build and strict TypeScript typecheck passing 100% (`next build` 9/9 pages generated)
-
-### Phase 8: Integrations, E2E Verification & Packaging
+### Phase 4: Integrations & React Package
 - [x] `@charlie/advisor-react` npm package:
   - React 19 & 18 compatibility with `'use client'` App Router directives
-  - `CharlieProvider` context (`apiUrl`, `apiKey`, `businessId`, `currency`, `timezone`)
   - `useBusinessAnalytics`: deterministic sales, pareto, customer, and product calculations with integer minor units
-  - `useBusinessRecommendations`: API polling, optimistic status updating (`new`, `viewed`, `accepted`, `in_progress`, `completed`, `dismissed`)
+  - `useBusinessRecommendations`: API polling, optimistic status updating
   - `useAdvisorChat`: multi-turn natural language business conversation management
   - Reusable accessible UI components: `MetricBadge`, `ParetoChart`, `RecommendationWidget`
   - Automated tests passing 100% in Vitest
@@ -141,19 +70,30 @@
   - `examples/nodejs-integration`: CLI executive analytics runner on realistic datasets
   - `examples/nextjs-integration`: Next.js 15 App Router example embedding `@charlie/advisor-react` (production build verified)
   - `examples/laravel-integration`: Eloquent order adapter sync command (`SyncAnalyticsSnapshotCommand`) and HTTP service client (`CharlieAnalyticsService`)
-- [x] Containerization & Multi-Service DevOps (`infrastructure/docker/`):
-  - `Dockerfile.api`: PHP 8.3 FPM, Composer, PostgreSQL, Redis extensions, BCMath
-  - `Dockerfile.dashboard`: Node.js 22 LTS, pnpm, Next.js standalone runner
-  - `docker-compose.yml`: orchestrated full-stack environment (PostgreSQL 16, Redis 7, Laravel API on port 8000, Horizon Queue Worker, Next.js Dashboard on port 3000)
-- [x] GitHub Actions CI/CD Pipeline (`.github/workflows/ci.yml`):
-  - TypeScript packages matrix (Typecheck, Build, Vitest across `@charlie/advisor-types`, `@charlie/analytics-core`, `@charlie/analytics-adapters`, `charlie-the-business-advisor`, `@charlie/advisor-react`)
-  - Laravel 12 API automated testing (PHP 8.3, Composer dependencies, SQLite/PostgreSQL migrations, 41 PHPUnit/Pest feature & unit tests with 212 assertions)
-  - Next.js production build verification (`apps/dashboard` and `examples/nextjs-integration`)
+
+### Phase 5: Production Repository Separation & Architecture Refactoring
+- [x] Separation into two independent repositories:
+  - **Repository A (Public Open Source)**: `charlie-the-business-advisor`
+    - Contains open-source packages: `@charlie/advisor-types`, `@charlie/analytics-core`, `@charlie/analytics-adapters`, `charlie-the-business-advisor`, `@charlie/advisor-react`
+    - Contains integration examples: `examples/nodejs-integration`, `examples/nextjs-integration`, `examples/laravel-integration`
+    - Cleaned of all proprietary SaaS code (`apps/api`, `apps/dashboard`, `infrastructure/docker`)
+    - Updated open-source CI workflow (`.github/workflows/ci.yml`)
+    - Open-source documentation (`docs/getting-started/`, `docs/integrations/`, `docs/architecture/`)
+  - **Repository B (Private Commercial SaaS)**: `charlie-advisor-cloud` (at `/Users/timothyakiode/Desktop/packages/charlie-advisor-cloud`)
+    - Contains proprietary Laravel 12 multi-tenant API (`apps/api`)
+    - Contains Next.js 15 commercial dashboard (`apps/dashboard`)
+    - Vendored `@charlie/advisor-types` with zero cross-repository filesystem imports
+    - Multi-container Docker infrastructure (`infrastructure/docker/` with API, Worker, Dashboard, Nginx)
+    - Deployment guides and operational runbooks (`docs/deployment/`, `docs/runbooks/`)
+    - Independent GitHub Actions CI and deploy pipelines
+- [x] Zero cross-repository relative imports
+- [x] Clean standalone build and test execution for both repositories
 
 ---
 
-## Final Verification & Test Metrics
-- **TypeScript Packages**: 5/5 packages built, 10/10 test files passing (33/33 Vitest unit & integration tests)
-- **Laravel SaaS Backend**: 12/12 database migrations executed, 41/41 feature & unit tests passing (212 assertions)
-- **Next.js Applications**: 2/2 production builds passing (`apps/dashboard` 9/9 pages, `examples/nextjs-integration` 4/4 pages)
-- **Zero Fabricated Claims**: Strict deterministic integer minor-unit financial arithmetic with SHA-256 snapshot hashing and cryptographic grounding verification.
+## Verification Record
+
+- **TypeScript Packages in Repository A**: 5/5 packages built, 10/10 test files passing (33/33 Vitest tests).
+- **Next.js Example in Repository A**: 4/4 pages building cleanly.
+- **Laravel SaaS in Repository B**: 41/41 feature & unit tests passing (212 assertions).
+- **Dashboard in Repository B**: 9/9 pages building cleanly.

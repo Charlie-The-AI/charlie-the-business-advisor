@@ -1,8 +1,8 @@
 {
-  "name": "charlie-monorepo",
+  "name": "charlie-the-business-advisor",
   "version": "1.0.0",
   "private": true,
-  "description": "Charlie the Business Advisor Monorepo",
+  "description": "Charlie the Business Advisor — Open-Source Business Analytics Engine",
   "packageManager": "pnpm@12.16.1",
   "engines": {
     "node": ">=20.0.0"

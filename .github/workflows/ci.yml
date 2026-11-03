@@ -1,4 +1,4 @@
-name: CI
+name: Open Source CI
 
 on:
   push:
@@ -12,7 +12,7 @@ concurrency:
 
 jobs:
   test-packages:
-    name: TypeScript Packages (Core, Adapters, Types, React)
+    name: TypeScript Packages (Core, Adapters, Types, React, Unified Client)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -40,33 +40,8 @@ jobs:
       - name: Run Package Tests (Vitest)
         run: pnpm test
 
-  test-api:
-    name: Laravel 12 Multi-Tenant API
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: apps/api
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup PHP 8.3
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.3'
-          extensions: mbstring, xml, ctype, iconv, intl, pdo_sqlite, bcmath, redis
-          coverage: none
-
-      - name: Install Composer Dependencies
-        run: composer install --prefer-dist --no-progress --no-interaction
-
-      - name: Run Migrations
-        run: php artisan migrate --force --env=testing
-
-      - name: Run API Feature & Unit Tests
-        run: php artisan test --env=testing
-
-  test-dashboard:
-    name: Next.js SaaS Dashboard & Examples Build
+  test-examples:
+    name: Framework Integration Examples
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -87,9 +62,6 @@ jobs:
 
       - name: Build Packages First
         run: pnpm build
-
-      - name: Build Next.js Dashboard
-        run: pnpm --filter=@charlie/dashboard run build
 
       - name: Build Next.js Integration Example
         run: pnpm --filter=example-nextjs-integration run build

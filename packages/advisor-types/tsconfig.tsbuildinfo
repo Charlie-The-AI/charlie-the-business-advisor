@@ -1,0 +1,1 @@
+{"root":["./src/analytics.ts","./src/currency.ts","./src/customer.ts","./src/index.ts","./src/order.ts","./src/period.ts","./src/product.ts","./src/recommendation.ts","./src/snapshot.ts","./src/transaction.ts"],"version":"5.9.3"}

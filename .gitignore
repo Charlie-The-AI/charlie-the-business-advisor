@@ -1,0 +1,47 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build artifacts
+dist/
+build/
+.turbo/
+.next/
+out/
+
+# Laravel
+apps/api/vendor/
+apps/api/.env
+apps/api/bootstrap/cache/
+apps/api/storage/*.key
+apps/api/storage/logs/
+apps/api/storage/framework/cache/
+apps/api/storage/framework/sessions/
+apps/api/storage/framework/views/
+
+# Logs and databases
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.sqlite
+*.sqlite-journal
+
+# Environment variables
+.env
+.env.local
+.env.production
+.env.development
+*.env
+
+# IDE and OS
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Coverage and testing
+coverage/
+.nyc_output/

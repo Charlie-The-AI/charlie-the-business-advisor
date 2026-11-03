@@ -1,0 +1,17 @@
+{
+  "name": "nodejs-integration-example",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js",
+    "build": "tsc -b",
+    "run:ts": "node --experimental-strip-types src/index.ts"
+  },
+  "dependencies": {
+    "charlie-the-business-advisor": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.2"
+  }
+}

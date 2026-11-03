@@ -1,8 +1,8 @@
 'use client';
 
 import { useMemo } from 'react';
-import type { Order, CurrencyCode, AnalyticsSnapshot } from '@charlie/advisor-types';
-import { createAnalyticsSnapshot } from '@charlie/analytics-core';
+import type { Order, CurrencyCode, AnalyticsSnapshot } from '@charlie-the-ai/advisor-types';
+import { createAnalyticsSnapshot } from '@charlie-the-ai/analytics-core';
 import { useCharlieContext } from './context.js';
 
 export interface UseBusinessAnalyticsOptions {

@@ -1,4 +1,4 @@
-import { Order } from "@charlie/advisor-types";
+import { Order } from "@charlie-the-ai/advisor-types";
 
 export function createMockOrders(): Order[] {
   return [

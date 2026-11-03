@@ -1,6 +1,6 @@
 'use client';
 
-import type { Recommendation } from '@charlie/advisor-types';
+import type { Recommendation } from '@charlie-the-ai/advisor-types';
 
 export interface RecommendationWidgetProps {
   recommendation: Recommendation;

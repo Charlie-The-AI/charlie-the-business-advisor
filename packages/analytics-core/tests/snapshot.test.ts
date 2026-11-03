@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { createAnalyticsSnapshot } from "../src/snapshot.js";
-import { AnalyticsSnapshotSchema } from "@charlie/advisor-types";
+import { AnalyticsSnapshotSchema } from "@charlie-the-ai/advisor-types";
 import { createMockOrders } from "./fixtures/mock-orders.js";
 
 describe("Analytics Snapshot Generation & Schema Validation", () => {

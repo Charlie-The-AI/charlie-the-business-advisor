@@ -16,7 +16,8 @@
     "dist"
   ],
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   },
   "license": "MIT",
   "repository": {
@@ -40,9 +41,9 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@charlie/advisor-types": "workspace:*",
-    "@charlie/analytics-core": "workspace:*",
-    "@charlie/analytics-adapters": "workspace:*"
+    "@charlie-the-ai/advisor-types": "workspace:*",
+    "@charlie-the-ai/analytics-core": "workspace:*",
+    "@charlie-the-ai/analytics-adapters": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5.8.2",

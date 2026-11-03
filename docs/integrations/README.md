@@ -38,12 +38,12 @@ See working sample in `examples/nodejs-integration`.
 
 ## 2. Next.js (App Router & React)
 
-Use `@charlie/advisor-react` to build interactive analytics interfaces with reactive hooks.
+Use `@charlie-the-ai/advisor-react` to build interactive analytics interfaces with reactive hooks.
 
 ```tsx
 'use client';
 
-import { useCharlieAnalytics } from '@charlie/advisor-react';
+import { useCharlieAnalytics } from '@charlie-the-ai/advisor-react';
 
 export default function AnalyticsDashboard({ initialTransactions }) {
   const { snapshot, isLoading } = useCharlieAnalytics({
@@ -69,7 +69,7 @@ See working sample in `examples/nextjs-integration`.
 
 ## 3. Laravel / PHP Integration
 
-Use `@charlie/analytics-adapters` to ingest Laravel Eloquent models or database rows directly into Charlie.
+Use `@charlie-the-ai/analytics-adapters` to ingest Laravel Eloquent models or database rows directly into Charlie.
 
 ```php
 // In your Laravel Controller or Command:

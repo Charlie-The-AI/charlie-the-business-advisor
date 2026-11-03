@@ -175,13 +175,13 @@ importers:
 
   examples/nextjs-integration:
     dependencies:
-      '@charlie/advisor-react':
+      '@charlie-the-ai/advisor-react':
         specifier: workspace:*
         version: link:../../packages/advisor-react
-      '@charlie/advisor-types':
+      '@charlie-the-ai/advisor-types':
         specifier: workspace:*
         version: link:../../packages/advisor-types
-      '@charlie/analytics-core':
+      '@charlie-the-ai/analytics-core':
         specifier: workspace:*
         version: link:../../packages/analytics-core
       next:
@@ -211,7 +211,7 @@ importers:
     dependencies:
       charlie-the-business-advisor:
         specifier: workspace:*
-        version: link:../..
+        version: link:../../packages/charlie-the-business-advisor
     devDependencies:
       typescript:
         specifier: ^5.8.2
@@ -219,10 +219,10 @@ importers:
 
   packages/advisor-react:
     dependencies:
-      '@charlie/advisor-types':
+      '@charlie-the-ai/advisor-types':
         specifier: workspace:*
         version: link:../advisor-types
-      '@charlie/analytics-core':
+      '@charlie-the-ai/analytics-core':
         specifier: workspace:*
         version: link:../analytics-core
     devDependencies:
@@ -257,10 +257,10 @@ importers:
 
   packages/analytics-adapters:
     dependencies:
-      '@charlie/advisor-types':
+      '@charlie-the-ai/advisor-types':
         specifier: workspace:*
         version: link:../advisor-types
-      '@charlie/analytics-core':
+      '@charlie-the-ai/analytics-core':
         specifier: workspace:*
         version: link:../analytics-core
     devDependencies:
@@ -273,7 +273,7 @@ importers:
 
   packages/analytics-core:
     dependencies:
-      '@charlie/advisor-types':
+      '@charlie-the-ai/advisor-types':
         specifier: workspace:*
         version: link:../advisor-types
     devDependencies:
@@ -286,13 +286,13 @@ importers:
 
   packages/charlie-the-business-advisor:
     dependencies:
-      '@charlie/advisor-types':
+      '@charlie-the-ai/advisor-types':
         specifier: workspace:*
         version: link:../advisor-types
-      '@charlie/analytics-adapters':
+      '@charlie-the-ai/analytics-adapters':
         specifier: workspace:*
         version: link:../analytics-adapters
-      '@charlie/analytics-core':
+      '@charlie-the-ai/analytics-core':
         specifier: workspace:*
         version: link:../analytics-core
     devDependencies:

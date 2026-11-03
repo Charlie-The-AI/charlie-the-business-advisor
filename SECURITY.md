@@ -6,11 +6,11 @@ We take the security of Charlie the Business Advisor open-source packages seriou
 
 | Package | Supported Versions |
 | --- | --- |
-| `@charlie/advisor-types` | >= 0.1.0 |
-| `@charlie/analytics-core` | >= 0.1.0 |
-| `@charlie/analytics-adapters` | >= 0.1.0 |
+| `@charlie-the-ai/advisor-types` | >= 0.1.0 |
+| `@charlie-the-ai/analytics-core` | >= 0.1.0 |
+| `@charlie-the-ai/analytics-adapters` | >= 0.1.0 |
 | `charlie-the-business-advisor` | >= 0.1.0 |
-| `@charlie/advisor-react` | >= 0.1.0 |
+| `@charlie-the-ai/advisor-react` | >= 0.1.0 |
 
 ---
 

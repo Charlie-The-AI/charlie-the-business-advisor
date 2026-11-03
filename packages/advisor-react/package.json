@@ -1,5 +1,5 @@
 {
-  "name": "@charlie/advisor-react",
+  "name": "@charlie-the-ai/advisor-react",
   "version": "0.1.0",
   "description": "React hooks and accessible components for Charlie the Business Advisor",
   "type": "module",
@@ -16,7 +16,8 @@
     "dist"
   ],
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   },
   "license": "MIT",
   "repository": {
@@ -43,8 +44,8 @@
     "react-dom": ">=18.0.0"
   },
   "dependencies": {
-    "@charlie/advisor-types": "workspace:*",
-    "@charlie/analytics-core": "workspace:*"
+    "@charlie-the-ai/advisor-types": "workspace:*",
+    "@charlie-the-ai/analytics-core": "workspace:*"
   },
   "devDependencies": {
     "@types/react": "^19.0.10",

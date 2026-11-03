@@ -4,8 +4,8 @@ import {
   OrderStatus,
   OrderSchema,
   OrderItemSchema,
-} from "@charlie/advisor-types";
-import { Money } from "@charlie/analytics-core";
+} from "@charlie-the-ai/advisor-types";
+import { Money } from "@charlie-the-ai/analytics-core";
 import {
   OrderAdapterConfig,
   OrderItemAdapterConfig,

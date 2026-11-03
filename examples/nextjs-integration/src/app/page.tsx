@@ -1,7 +1,7 @@
 'use client';
 
-import { useBusinessAnalytics, MetricBadge, ParetoChart, RecommendationWidget } from '@charlie/advisor-react';
-import type { Order, Recommendation } from '@charlie/advisor-types';
+import { useBusinessAnalytics, MetricBadge, ParetoChart, RecommendationWidget } from '@charlie-the-ai/advisor-react';
+import type { Order, Recommendation } from '@charlie-the-ai/advisor-types';
 
 const sampleOrders: Order[] = [
   {

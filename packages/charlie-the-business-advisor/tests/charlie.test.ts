@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { Charlie } from "../src/index.js";
-import { Order } from "@charlie/advisor-types";
+import { Order } from "@charlie-the-ai/advisor-types";
 
 describe("Charlie the Business Advisor — Public Client", () => {
   const sampleOrders: Order[] = [

@@ -3,7 +3,7 @@
 ## 1. System Vision
 
 Charlie the Business Advisor is a dual-tier commercial analytics and AI advisory platform:
-1. **Tier A (Open-Source Core):** An offline, deterministic TypeScript analytics library (`@charlie/analytics-core`, `@charlie/advisor-types`, `@charlie/analytics-adapters`, and `charlie-the-business-advisor`) that calculates sales volume, revenue recognition, Pareto distributions, customer cohorts, RFM segmentation, product profitability, and moving averages.
+1. **Tier A (Open-Source Core):** An offline, deterministic TypeScript analytics library (`@charlie-the-ai/analytics-core`, `@charlie-the-ai/advisor-types`, `@charlie-the-ai/analytics-adapters`, and `charlie-the-business-advisor`) that calculates sales volume, revenue recognition, Pareto distributions, customer cohorts, RFM segmentation, product profitability, and moving averages.
 2. **Tier B (SaaS Advisory Cloud):** A multi-tenant Laravel 12 API with PostgreSQL, Redis, and an AI advisory orchestration layer that ingests deterministic snapshots, validates data completeness, discovers actionable growth opportunities, and grounds recommendations strictly against verified figures.
 
 ## 2. High-Level Component Topology
@@ -17,11 +17,11 @@ graph TD
     end
 
     subgraph OpenSourceEngine ["Open-Source npm Ecosystem"]
-        Types["@charlie/advisor-types\n(Zod Schemas & Contracts)"]
-        Core["@charlie/analytics-core\n(Deterministic Analytics Engine)"]
-        Adapters["@charlie/analytics-adapters\n(Custom Schema Mapping)"]
-        SDK["@charlie/advisor-sdk\n(API Client)"]
-        ReactPkg["@charlie/advisor-react\n(React Hooks & Visuals)"]
+        Types["@charlie-the-ai/advisor-types\n(Zod Schemas & Contracts)"]
+        Core["@charlie-the-ai/analytics-core\n(Deterministic Analytics Engine)"]
+        Adapters["@charlie-the-ai/analytics-adapters\n(Custom Schema Mapping)"]
+        SDK["@charlie-the-ai/advisor-sdk\n(API Client)"]
+        ReactPkg["@charlie-the-ai/advisor-react\n(React Hooks & Visuals)"]
         Umbrella["charlie-the-business-advisor\n(Unified Entrypoint)"]
     end
 

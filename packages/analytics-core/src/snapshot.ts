@@ -3,7 +3,7 @@ import {
   Order,
   CurrencyCode,
   DataQualityReport,
-} from "@charlie/advisor-types";
+} from "@charlie-the-ai/advisor-types";
 import { calculateSalesSummary } from "./sales.js";
 import { calculatePareto, extractParetoInputsFromOrders } from "./pareto.js";
 import { calculateCustomerAnalytics } from "./customers.js";

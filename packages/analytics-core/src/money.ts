@@ -1,4 +1,4 @@
-import { getCurrencyMetadata, CurrencyCode } from "@charlie/advisor-types";
+import { getCurrencyMetadata, CurrencyCode } from "@charlie-the-ai/advisor-types";
 
 /**
  * Deterministic fixed-point financial arithmetic and formatting.

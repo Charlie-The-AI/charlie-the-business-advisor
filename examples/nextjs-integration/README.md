@@ -1,6 +1,6 @@
 # Charlie Next.js Integration Example
 
-This example demonstrates how to integrate `@charlie/advisor-react` into a Next.js 15 App Router application.
+This example demonstrates how to integrate `@charlie-the-ai/advisor-react` into a Next.js 15 App Router application.
 
 ## Key Features Demonstrated
 

@@ -1,4 +1,4 @@
-import { Charlie, Order } from "charlie-the-business-advisor";
+import { Charlie, Order, ParetoContributor, RfmCustomerScore } from "charlie-the-business-advisor";
 
 console.log("=================================================================");
 console.log("  🎩 CHARLIE THE BUSINESS ADVISOR — OPEN-SOURCE ENGINE DEMO  ");
@@ -176,7 +176,7 @@ console.log(`   - Total Contributing Products: ${report.pareto.products.totalCon
 console.log(`   - Vital Contributors Count:    ${report.pareto.products.vitalContributorsCount} (${report.pareto.products.vitalContributorsPercentage}% of catalogue)`);
 console.log(`   - Gini Inequality Index:       ${report.pareto.products.giniCoefficient}`);
 console.log(`   - Herfindahl-Hirschman (HHI):  ${report.pareto.products.herfindahlHirschmanIndex}`);
-report.pareto.products.contributors.forEach((c) => {
+report.pareto.products.contributors.forEach((c: ParetoContributor) => {
   const badge = c.isVitalFew ? "⭐️ [VITAL 80%]" : "   [LONG TAIL]";
   console.log(`     ${badge} #${c.rank} ${c.name.padEnd(32)} -> ${c.revenueFormatted} (${c.contributionPercentage}% | Cumul: ${c.cumulativePercentage}%)`);
 });
@@ -188,7 +188,7 @@ console.log(`   - Repeat Customers:         ${report.customers.repeatCustomersCo
 console.log(`   - Repeat Purchase Rate:     ${report.customers.repeatPurchaseRatePercentage}%`);
 console.log(`   - Average Spend per Customer:${report.customers.averageRevenuePerCustomerFormatted}`);
 console.log("   - Segments Breakdown:");
-report.customers.rfmSegments.forEach((s) => {
+report.customers.rfmSegments.forEach((s: RfmCustomerScore) => {
   console.log(`     * ${s.customerName?.padEnd(16)}: Segment: "${s.segment}" (RFM Score: ${s.rfmScore}, Frequency: ${s.frequency} order(s))`);
 });
 console.log("");

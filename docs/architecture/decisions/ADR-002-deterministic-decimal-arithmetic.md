@@ -8,7 +8,7 @@ Standard IEEE-754 binary floating-point arithmetic in JavaScript results in calc
 
 ## Decision
 1. All monetary quantities in inputs, intermediate state, and outputs are represented in **integer minor units** (e.g., cents, kobo, pence) as `bigint` or safe integers, coupled with an ISO-4217 currency code.
-2. We implement a dedicated zero-dependency `Money` and `FixedDecimal` calculation engine within `@charlie/analytics-core` that:
+2. We implement a dedicated zero-dependency `Money` and `FixedDecimal` calculation engine within `@charlie-the-ai/analytics-core` that:
    - Performs integer addition, subtraction, and multiplication.
    - Performs division with explicit half-up rounding to precision.
    - Provides safe formatting (`formatMinorUnits(2500000, "NGN") => "₦25,000.00"`).

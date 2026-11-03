@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
-import { CharlieProvider } from '@charlie/advisor-react';
+import { CharlieProvider } from '@charlie-the-ai/advisor-react';
 
 export const metadata: Metadata = {
   title: 'Next.js Charlie Integration Example',
-  description: 'Example Next.js App Router application integrating @charlie/advisor-react',
+  description: 'Example Next.js App Router application integrating @charlie-the-ai/advisor-react',
 };
 
 export default function RootLayout({

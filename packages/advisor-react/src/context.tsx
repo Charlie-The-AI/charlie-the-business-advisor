@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, useContext, type ReactNode } from 'react';
-import type { CurrencyCode } from '@charlie/advisor-types';
+import type { CurrencyCode } from '@charlie-the-ai/advisor-types';
 
 export interface CharlieConfig {
   apiKey?: string;

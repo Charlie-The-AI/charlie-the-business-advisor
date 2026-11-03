@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import type { Recommendation, RecommendationStatus } from '@charlie/advisor-types';
+import type { Recommendation, RecommendationStatus } from '@charlie-the-ai/advisor-types';
 import { useCharlieContext } from './context.js';
 
 export interface UseBusinessRecommendationsOptions {

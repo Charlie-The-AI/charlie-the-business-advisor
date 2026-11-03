@@ -1,5 +1,5 @@
 {
-  "name": "@charlie/advisor-types",
+  "name": "@charlie-the-ai/advisor-types",
   "version": "0.1.0",
   "description": "Shared TypeScript data contracts, domain models, and Zod schemas for Charlie the Business Advisor",
   "type": "module",
@@ -16,7 +16,8 @@
     "dist"
   ],
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   },
   "license": "MIT",
   "repository": {

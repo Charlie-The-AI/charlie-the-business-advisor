@@ -1,4 +1,4 @@
-import { Order, OrderStatus } from "@charlie/advisor-types";
+import { Order, OrderStatus } from "@charlie-the-ai/advisor-types";
 
 export type ValueAccessor<TSource, TValue> =
   | string // Key path (e.g. "customer.email" or "total_price")

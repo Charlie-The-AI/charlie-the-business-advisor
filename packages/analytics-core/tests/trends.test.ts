@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { calculateTrends } from "../src/trends.js";
-import { PeriodicSalesPoint } from "@charlie/advisor-types";
+import { PeriodicSalesPoint } from "@charlie-the-ai/advisor-types";
 
 describe("Trend Analytics & Anomaly Detection", () => {
   it("calculates moving averages accurately", () => {

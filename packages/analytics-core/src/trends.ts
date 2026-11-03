@@ -4,7 +4,7 @@ import {
   MovingAveragePoint,
   AnomalyPoint,
   CurrencyCode,
-} from "@charlie/advisor-types";
+} from "@charlie-the-ai/advisor-types";
 import { Money } from "./money.js";
 
 export interface CalculateTrendsOptions {

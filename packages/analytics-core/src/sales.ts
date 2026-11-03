@@ -1,4 +1,4 @@
-import { Order, SalesSummary, PeriodicSalesPoint, CurrencyCode } from "@charlie/advisor-types";
+import { Order, SalesSummary, PeriodicSalesPoint, CurrencyCode } from "@charlie-the-ai/advisor-types";
 import { Money } from "./money.js";
 
 export interface CalculateSalesOptions {

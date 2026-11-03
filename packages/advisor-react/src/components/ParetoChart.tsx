@@ -1,6 +1,6 @@
 'use client';
 
-import type { ParetoContributor } from '@charlie/advisor-types';
+import type { ParetoContributor } from '@charlie-the-ai/advisor-types';
 
 export interface ParetoChartProps {
   contributors: ParetoContributor[];

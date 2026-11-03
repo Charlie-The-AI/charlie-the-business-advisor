@@ -8,7 +8,7 @@ import {
   ProductAnalytics,
   TrendAnalytics,
   ParetoDimension,
-} from "@charlie/advisor-types";
+} from "@charlie-the-ai/advisor-types";
 import {
   createAnalyticsSnapshot,
   calculateSalesSummary,
@@ -18,12 +18,12 @@ import {
   calculateTrends,
   extractParetoInputsFromOrders,
   Money,
-} from "@charlie/analytics-core";
+} from "@charlie-the-ai/analytics-core";
 import {
   createOrderAdapter,
   createLaravelOrderAdapter,
   OrderAdapterConfig,
-} from "@charlie/analytics-adapters";
+} from "@charlie-the-ai/analytics-adapters";
 
 export interface CharlieConfig {
   apiKey?: string;

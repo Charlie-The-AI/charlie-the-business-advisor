@@ -28,10 +28,10 @@ Key capabilities:
 | Package | npm Package | Description |
 | :--- | :--- | :--- |
 | **`charlie-the-business-advisor`** | `charlie-the-business-advisor` | Unified developer entry point and high-level client |
-| **`packages/analytics-core`** | `@charlie/analytics-core` | Pure deterministic analytics engine and algorithms |
-| **`packages/advisor-types`** | `@charlie/advisor-types` | Zod schemas and TypeScript data contracts |
-| **`packages/analytics-adapters`**| `@charlie/analytics-adapters` | Data normalization adapters for databases and APIs |
-| **`packages/advisor-react`** | `@charlie/advisor-react` | React 19 hooks and UI components for web apps |
+| **`packages/analytics-core`** | `@charlie-the-ai/analytics-core` | Pure deterministic analytics engine and algorithms |
+| **`packages/advisor-types`** | `@charlie-the-ai/advisor-types` | Zod schemas and TypeScript data contracts |
+| **`packages/analytics-adapters`**| `@charlie-the-ai/analytics-adapters` | Data normalization adapters for databases and APIs |
+| **`packages/advisor-react`** | `@charlie-the-ai/advisor-react` | React 19 hooks and UI components for web apps |
 
 ---
 
@@ -44,7 +44,7 @@ Key capabilities:
 npm install charlie-the-business-advisor
 
 # Or install individual modular packages:
-npm install @charlie/analytics-core @charlie/advisor-types
+npm install @charlie-the-ai/analytics-core @charlie-the-ai/advisor-types
 ```
 
 ### Basic Usage
@@ -97,7 +97,7 @@ console.log('Pareto Top 20%:', snapshot.pareto.topProducts);
 
 Explore working sample applications in [`examples/`](examples/):
 - **[`examples/nodejs-integration`](examples/nodejs-integration/)**: REST API processing transaction feeds with Express and Charlie.
-- **[`examples/nextjs-integration`](examples/nextjs-integration/)**: Next.js App Router app using `@charlie/advisor-react` hooks and Pareto visualizations.
+- **[`examples/nextjs-integration`](examples/nextjs-integration/)**: Next.js App Router app using `@charlie-the-ai/advisor-react` hooks and Pareto visualizations.
 - **[`examples/laravel-integration`](examples/laravel-integration/)**: Exporting Laravel Eloquent transactions to Charlie analytics snapshots.
 
 ---

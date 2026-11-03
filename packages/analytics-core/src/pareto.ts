@@ -4,7 +4,7 @@ import {
   ParetoContributor,
   CurrencyCode,
   Order,
-} from "@charlie/advisor-types";
+} from "@charlie-the-ai/advisor-types";
 import { Money } from "./money.js";
 
 export interface ParetoItemInput {

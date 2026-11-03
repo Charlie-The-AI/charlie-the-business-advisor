@@ -4,7 +4,7 @@ import {
   ProductPerformanceItem,
   CategoryPerformanceItem,
   CurrencyCode,
-} from "@charlie/advisor-types";
+} from "@charlie-the-ai/advisor-types";
 import { Money } from "./money.js";
 
 export interface CalculateProductOptions {

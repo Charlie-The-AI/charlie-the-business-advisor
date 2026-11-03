@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import type { Order } from '@charlie/advisor-types';
-import { calculateSalesSummary, calculatePareto, extractParetoInputsFromOrders } from '@charlie/analytics-core';
+import type { Order } from '@charlie-the-ai/advisor-types';
+import { calculateSalesSummary, calculatePareto, extractParetoInputsFromOrders } from '@charlie-the-ai/analytics-core';
 
 describe('Advisor React Library & Core Interop', () => {
   const mockOrders: Order[] = [

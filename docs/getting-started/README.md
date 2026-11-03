@@ -13,12 +13,12 @@ Install Charlie in your Node.js or browser project:
 npm install charlie-the-business-advisor
 
 # Or install specific modular packages:
-npm install @charlie/analytics-core @charlie/advisor-types @charlie/analytics-adapters
+npm install @charlie-the-ai/analytics-core @charlie-the-ai/advisor-types @charlie-the-ai/analytics-adapters
 ```
 
 If you are using React:
 ```bash
-npm install @charlie/advisor-react
+npm install @charlie-the-ai/advisor-react
 ```
 
 ---
@@ -100,10 +100,10 @@ console.log('Pareto Products:', snapshot.pareto.topProducts);
 | Package | Description |
 | :--- | :--- |
 | **`charlie-the-business-advisor`** | The unified high-level developer entry point. Integrates all modules into an intuitive API. |
-| **`@charlie/advisor-types`** | Zod schemas and TypeScript types for transactions, orders, customers, and analytics snapshots. |
-| **`@charlie/analytics-core`** | Deterministic analytics computations: revenue, Pareto distributions, RFM segmentation, trends. |
-| **`@charlie/analytics-adapters`** | Data normalization adapters for Eloquent, generic SQL, JSON, and CSV data sources. |
-| **`@charlie/advisor-react`** | React hooks (`useCharlieAnalytics`, `useParetoAnalysis`) and UI components for dashboard building. |
+| **`@charlie-the-ai/advisor-types`** | Zod schemas and TypeScript types for transactions, orders, customers, and analytics snapshots. |
+| **`@charlie-the-ai/analytics-core`** | Deterministic analytics computations: revenue, Pareto distributions, RFM segmentation, trends. |
+| **`@charlie-the-ai/analytics-adapters`** | Data normalization adapters for Eloquent, generic SQL, JSON, and CSV data sources. |
+| **`@charlie-the-ai/advisor-react`** | React hooks (`useCharlieAnalytics`, `useParetoAnalysis`) and UI components for dashboard building. |
 
 ---
 

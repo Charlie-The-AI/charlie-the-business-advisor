@@ -246,6 +246,40 @@ importers:
         specifier: ^5.8.2
         version: 5.9.3
 
+  examples/nextjs-integration:
+    dependencies:
+      '@charlie/advisor-react':
+        specifier: workspace:*
+        version: link:../../packages/advisor-react
+      '@charlie/advisor-types':
+        specifier: workspace:*
+        version: link:../../packages/advisor-types
+      '@charlie/analytics-core':
+        specifier: workspace:*
+        version: link:../../packages/analytics-core
+      next:
+        specifier: ^15.2.0
+        version: 15.5.28(@types/node@22.20.5)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+      react:
+        specifier: ^19.0.0
+        version: 19.3.1
+      react-dom:
+        specifier: ^19.0.0
+        version: 19.3.1(react@19.3.1)
+    devDependencies:
+      '@types/node':
+        specifier: ^22.13.9
+        version: 22.20.5
+      '@types/react':
+        specifier: ^19.0.10
+        version: 19.3.0
+      '@types/react-dom':
+        specifier: ^19.0.4
+        version: 19.3.0(@types/react@19.3.0)
+      typescript:
+        specifier: ^5.8.2
+        version: 5.9.3
+
   examples/nodejs-integration:
     dependencies:
       charlie-the-business-advisor:
@@ -255,6 +289,34 @@ importers:
       typescript:
         specifier: ^5.8.2
         version: 5.9.3
+
+  packages/advisor-react:
+    dependencies:
+      '@charlie/advisor-types':
+        specifier: workspace:*
+        version: link:../advisor-types
+      '@charlie/analytics-core':
+        specifier: workspace:*
+        version: link:../analytics-core
+    devDependencies:
+      '@types/react':
+        specifier: ^19.0.10
+        version: 19.3.0
+      '@types/react-dom':
+        specifier: ^19.0.4
+        version: 19.3.0(@types/react@19.3.0)
+      react:
+        specifier: ^19.0.0
+        version: 19.3.1
+      react-dom:
+        specifier: ^19.0.0
+        version: 19.3.1(react@19.3.1)
+      typescript:
+        specifier: ^5.8.2
+        version: 5.9.3
+      vitest:
+        specifier: ^3.0.7
+        version: 3.2.7(@types/node@22.20.5)(jiti@2.7.0)(lightningcss@1.32.0)(supports-color@8.1.1)
 
   packages/advisor-types:
     dependencies:

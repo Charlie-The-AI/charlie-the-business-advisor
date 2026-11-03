@@ -63,3 +63,4 @@ export const StructuredRecommendationSchema = z.object({
 });
 
 export type StructuredRecommendation = z.infer<typeof StructuredRecommendationSchema>;
+export type Recommendation = StructuredRecommendation;

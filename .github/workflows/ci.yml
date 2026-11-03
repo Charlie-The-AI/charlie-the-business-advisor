@@ -1,0 +1,95 @@
+name: CI
+
+on:
+  push:
+    branches: [ master, main ]
+  pull_request:
+    branches: [ master, main ]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test-packages:
+    name: TypeScript Packages (Core, Adapters, Types, React)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 12.16.1
+
+      - name: Setup Node.js 22 LTS
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
+
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Typecheck Packages
+        run: pnpm typecheck
+
+      - name: Build Packages
+        run: pnpm build
+
+      - name: Run Package Tests (Vitest)
+        run: pnpm test
+
+  test-api:
+    name: Laravel 12 Multi-Tenant API
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/api
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP 8.3
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, xml, ctype, iconv, intl, pdo_sqlite, bcmath, redis
+          coverage: none
+
+      - name: Install Composer Dependencies
+        run: composer install --prefer-dist --no-progress --no-interaction
+
+      - name: Run Migrations
+        run: php artisan migrate --force --env=testing
+
+      - name: Run API Feature & Unit Tests
+        run: php artisan test --env=testing
+
+  test-dashboard:
+    name: Next.js SaaS Dashboard & Examples Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 12.16.1
+
+      - name: Setup Node.js 22 LTS
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
+
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build Packages First
+        run: pnpm build
+
+      - name: Build Next.js Dashboard
+        run: pnpm --filter=@charlie/dashboard run build
+
+      - name: Build Next.js Integration Example
+        run: pnpm --filter=example-nextjs-integration run build

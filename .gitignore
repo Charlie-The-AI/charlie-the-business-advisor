@@ -8,6 +8,8 @@ build/
 .turbo/
 .next/
 out/
+releases/
+*.tgz
 
 # Laravel
 apps/api/vendor/

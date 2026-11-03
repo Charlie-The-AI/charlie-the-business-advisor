@@ -59,10 +59,14 @@
 - [x] 100% test coverage across all packages (31 automated unit & integration tests passing)
 
 ### Phase 4: Multi-Tenant SaaS Backend (Laravel 12)
-- [ ] Tenant architecture (Organizations, Businesses, Members, Roles)
-- [ ] Scoped API key authentication (`cta_live_...`)
-- [ ] Snapshot ingestion API (`POST /v1/analytics/snapshots`)
-- [ ] Background job queue for recommendation generation
+- [x] Multi-tenant database migrations & models (`organizations`, `businesses`, `organization_members`, `api_keys`, `analytics_snapshots`, `recommendation_jobs`, `recommendations`, `usage_records`, `audit_logs`)
+- [x] Scoped API key authentication middleware (`cta_live_...` / `cta_test_...` with SHA-256 secret hashing)
+- [x] Strict tenant scoping & cross-tenant access prevention
+- [x] Snapshot ingestion endpoint (`POST /v1/analytics/snapshots`) with idempotency key deduplication & monthly quota enforcement
+- [x] Background queue recommendation processing (`GenerateRecommendationsJob`)
+- [x] Recommendation lifecycle endpoints (`/v1/recommendations/generate`, `/v1/recommendations/jobs/{id}`, `/v1/businesses/{id}/recommendations`, status updates)
+- [x] Scoped API key management endpoints (`GET /v1/api-keys`, `POST /v1/api-keys`, `DELETE /v1/api-keys/{id}`)
+- [x] 100% automated feature test suite passing (22 feature & unit tests, 78 assertions)
 
 ### Phase 5: AI Advisory Engine
 - [ ] Provider abstraction (`AiProviderInterface`) & OpenAI implementation

@@ -15,6 +15,22 @@
   "files": [
     "dist"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/charlie/charlie-the-business-advisor.git",
+    "directory": "packages/analytics-adapters"
+  },
+  "keywords": [
+    "charlie",
+    "analytics-adapters",
+    "data-normalization",
+    "eloquent",
+    "data-pipeline"
+  ],
   "scripts": {
     "build": "tsc -b",
     "typecheck": "tsc --noEmit",

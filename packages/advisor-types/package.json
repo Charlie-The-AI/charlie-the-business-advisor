@@ -15,6 +15,23 @@
   "files": [
     "dist"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/charlie/charlie-the-business-advisor.git",
+    "directory": "packages/advisor-types"
+  },
+  "keywords": [
+    "charlie",
+    "business-intelligence",
+    "analytics",
+    "types",
+    "zod",
+    "schemas"
+  ],
   "scripts": {
     "build": "tsc -b",
     "typecheck": "tsc --noEmit",

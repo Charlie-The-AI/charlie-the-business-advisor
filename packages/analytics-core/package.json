@@ -15,6 +15,24 @@
   "files": [
     "dist"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/charlie/charlie-the-business-advisor.git",
+    "directory": "packages/analytics-core"
+  },
+  "keywords": [
+    "charlie",
+    "business-intelligence",
+    "analytics",
+    "pareto",
+    "rfm",
+    "sales-metrics",
+    "deterministic-finance"
+  ],
   "scripts": {
     "build": "tsc -b",
     "typecheck": "tsc --noEmit",

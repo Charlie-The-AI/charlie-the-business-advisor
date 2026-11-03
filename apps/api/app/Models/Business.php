@@ -48,4 +48,9 @@ class Business extends Model
     {
         return $this->hasMany(RecommendationJob::class);
     }
+
+    public function conversations(): HasMany
+    {
+        return $this->hasMany(AiConversation::class);
+    }
 }

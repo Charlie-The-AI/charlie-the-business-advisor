@@ -68,11 +68,21 @@
 - [x] Scoped API key management endpoints (`GET /v1/api-keys`, `POST /v1/api-keys`, `DELETE /v1/api-keys/{id}`)
 - [x] 100% automated feature test suite passing (22 feature & unit tests, 78 assertions)
 
-### Phase 5: AI Advisory Engine
-- [ ] Provider abstraction (`AiProviderInterface`) & OpenAI implementation
-- [ ] Grounded recommendation generation with numerical validation
-- [ ] Recommendation lifecycle management
-- [ ] AI Business Chat with tool-calling
+### Phase 5: AI Advisory Engine & Natural Language Business Chat
+- [x] Provider abstraction (`AiProviderInterface`) & production OpenAI implementation (`gpt-4o-mini` / `gpt-4o`) with structured JSON schema outputs
+- [x] Mock AI provider for deterministic evaluation and offline CI testing
+- [x] Grounding Verifier (`GroundingVerifier`):
+  - Numerical evidence validation against ingestion snapshots with tolerance checks
+  - Guard against hallucinated business metrics and nonexistent source fields (`GroundingException`)
+  - Strict guardrail blocking unauthorized financial performance guarantees
+  - Prompt injection sanitization for untrusted user/business inputs
+- [x] Recommendation generation pipeline integrated into `GenerateRecommendationsJob` with audit tracking and token cost estimation
+- [x] Multi-turn conversational AI Business Chat (`AiChatController`):
+  - `POST /api/v1/businesses/{businessId}/chat/conversations` (create scoped conversation)
+  - `GET /api/v1/businesses/{businessId}/chat/conversations` (list conversations)
+  - `GET /api/v1/chat/conversations/{conversationId}/messages` (retrieve message history)
+  - `POST /api/v1/chat/conversations/{conversationId}/messages` (send question, ground with snapshot analytics, enforce tenant isolation, and record token usage)
+- [x] 100% automated test coverage (31 API feature & unit tests passing with 107 assertions)
 
 ### Phase 6: Subscriptions & Billing
 - [ ] Plan tiers (Free, Growth, Pro, Platform)

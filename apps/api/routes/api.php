@@ -36,6 +36,16 @@ Route::prefix('v1')->group(function () {
         Route::patch('/recommendations/{id}/status', [RecommendationController::class, 'updateStatus'])
             ->middleware('auth.api_key:recommendations:write');
 
+        // Natural Language AI Business Chat
+        Route::post('/businesses/{businessId}/chat/conversations', [\App\Http\Controllers\AiChatController::class, 'createConversation'])
+            ->middleware('auth.api_key:chat:write');
+        Route::get('/businesses/{businessId}/chat/conversations', [\App\Http\Controllers\AiChatController::class, 'listConversations'])
+            ->middleware('auth.api_key:chat:read');
+        Route::get('/chat/conversations/{conversationId}/messages', [\App\Http\Controllers\AiChatController::class, 'listMessages'])
+            ->middleware('auth.api_key:chat:read');
+        Route::post('/chat/conversations/{conversationId}/messages', [\App\Http\Controllers\AiChatController::class, 'sendMessage'])
+            ->middleware('auth.api_key:chat:write');
+
         // Scoped API Key Management
         Route::get('/api-keys', [ApiKeyController::class, 'index'])
             ->middleware('auth.api_key:keys:read');

@@ -3,8 +3,11 @@
 > The unified developer entry point and high-level SDK for Charlie the Business Advisor.
 
 [![npm version](https://img.shields.io/npm/v/charlie-the-business-advisor.svg)](https://www.npmjs.com/package/charlie-the-business-advisor)
+[![Documentation](https://img.shields.io/badge/docs-charlie--business--docs.vercel.app-blueviolet.svg)](https://charlie-business-docs.vercel.app/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)](https://www.typescriptlang.org/)
+
+> 📖 **Official Documentation & Live Interactive Demos:** [https://charlie-business-docs.vercel.app/](https://charlie-business-docs.vercel.app/)
 
 ---
 

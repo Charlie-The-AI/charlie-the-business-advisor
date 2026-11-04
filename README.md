@@ -6,7 +6,10 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![npm version](https://img.shields.io/npm/v/charlie-the-business-advisor.svg)](https://www.npmjs.com/package/charlie-the-business-advisor)
+[![Documentation](https://img.shields.io/badge/docs-charlie--business--docs.vercel.app-blueviolet.svg)](https://charlie-business-docs.vercel.app/)
 [![Node.js Support](https://img.shields.io/badge/Node.js-%3E%3D18.0.0-brightgreen.svg)](https://nodejs.org)
+
+> 📖 **Official Documentation & Live Interactive Demos:** [https://charlie-business-docs.vercel.app/](https://charlie-business-docs.vercel.app/)
 
 ---
 
@@ -58,12 +61,12 @@ Install the umbrella package `charlie-the-business-advisor` or use individual mo
 
 | Package | npm Package | Description | Documentation |
 |---|---|---|---|
-| **Umbrella SDK** | [`charlie-the-business-advisor`](https://www.npmjs.com/package/charlie-the-business-advisor) | High-level client, developer CLI, and unified entry point | [Guide](docs/getting-started/quickstart.md) |
-| **Dataset Contracts** | [`@charlie-the-ai/advisor-types`](https://www.npmjs.com/package/@charlie-the-ai/advisor-types) | Canonical schemas (`CharlieOrder`, `CharlieCustomer`) & validation | [Docs](docs/datasets/charlie-order.md) |
-| **Analytics Engine** | [`@charlie-the-ai/analytics-core`](https://www.npmjs.com/package/@charlie-the-ai/analytics-core) | Pure deterministic math: Sales, Pareto 80/20, RFM, Margins, Snapshots | [Docs](docs/analytics/sales-metrics.md) |
-| **Database Adapters**| [`@charlie-the-ai/analytics-adapters`](https://www.npmjs.com/package/@charlie-the-ai/analytics-adapters) | Zero-database-change field mappings & batch error isolation | [Docs](docs/adapters/overview.md) |
-| **Multi-Provider AI** | [`@charlie-the-ai/advisor-ai`](https://www.npmjs.com/package/@charlie-the-ai/advisor-ai) | OpenAI, Gemini, Claude, Mock provider & grounding verification | [Docs](docs/ai/providers.md) |
-| **React UI Components** | [`@charlie-the-ai/advisor-react`](https://www.npmjs.com/package/@charlie-the-ai/advisor-react) | Accessible dashboard cards (`RevenueCard`, `ParetoChart`) & hooks | [Docs](docs/frameworks/react.md) |
+| **Umbrella SDK** | [`charlie-the-business-advisor`](https://www.npmjs.com/package/charlie-the-business-advisor) | High-level client, developer CLI, and unified entry point | [Guide](https://charlie-business-docs.vercel.app/docs/quick-start) |
+| **Dataset Contracts** | [`@charlie-the-ai/advisor-types`](https://www.npmjs.com/package/@charlie-the-ai/advisor-types) | Canonical schemas (`CharlieOrder`, `CharlieCustomer`) & validation | [Docs](https://charlie-business-docs.vercel.app/docs/datasets/orders) |
+| **Analytics Engine** | [`@charlie-the-ai/analytics-core`](https://www.npmjs.com/package/@charlie-the-ai/analytics-core) | Pure deterministic math: Sales, Pareto 80/20, RFM, Margins, Snapshots | [Docs](https://charlie-business-docs.vercel.app/docs/analytics/revenue) |
+| **Database Adapters**| [`@charlie-the-ai/analytics-adapters`](https://www.npmjs.com/package/@charlie-the-ai/analytics-adapters) | Zero-database-change field mappings & batch error isolation | [Docs](https://charlie-business-docs.vercel.app/docs/adapters/overview) |
+| **Multi-Provider AI** | [`@charlie-the-ai/advisor-ai`](https://www.npmjs.com/package/@charlie-the-ai/advisor-ai) | OpenAI, Gemini, Claude, Mock provider & grounding verification | [Docs](https://charlie-business-docs.vercel.app/docs/ai/overview) |
+| **React UI Components** | [`@charlie-the-ai/advisor-react`](https://www.npmjs.com/package/@charlie-the-ai/advisor-react) | Accessible dashboard cards (`RevenueCard`, `ParetoChart`) & hooks | [Docs](https://charlie-business-docs.vercel.app/docs/frameworks/react) |
 
 ---
 

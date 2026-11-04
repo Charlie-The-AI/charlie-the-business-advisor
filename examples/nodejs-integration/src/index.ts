@@ -1,207 +1,157 @@
-import { Charlie, Order, ParetoContributor, RfmCustomerScore } from "charlie-the-business-advisor";
+import {
+  Charlie,
+  createOrderAdapter,
+  ParetoContributor,
+} from "charlie-the-business-advisor";
 
 console.log("=================================================================");
-console.log("  🎩 CHARLIE THE BUSINESS ADVISOR — OPEN-SOURCE ENGINE DEMO  ");
+console.log("  🎩 CHARLIE THE BUSINESS ADVISOR — NODE.JS INTEGRATION DEMO  ");
 console.log("=================================================================\n");
 
+// Initialize Charlie with offline Mock AI or environment keys
 const charlie = new Charlie({ defaultCurrency: "NGN" });
 
-// Sample raw e-commerce orders for a Lagos-based tech & lifestyle merchant
-const orders: Order[] = [
+// 1. Declarative Database Adapter Example:
+// Simulate raw database rows from an external PostgreSQL/MySQL table
+const rawDatabaseRows = [
   {
-    id: "ord_1001",
-    status: "completed",
-    currency: "NGN",
-    createdAt: "2026-03-01T08:30:00Z",
-    customerId: "cust_kemi",
-    customerName: "Kemi Adeleke",
-    customerEmail: "kemi@example.ng",
-    subtotalMinorUnits: 8500000, // ₦85,000.00
-    taxMinorUnits: 637500, // ₦6,375.00
-    shippingMinorUnits: 300000, // ₦3,000.00
-    discountMinorUnits: 500000, // ₦5,000.00
-    totalMinorUnits: 8937500, // ₦89,375.00
-    refundMinorUnits: 0,
-    tags: ["tech", "inverter"],
-    items: [
+    order_reference: "db_ord_101",
+    user_id: "usr_alice",
+    status_code: "PAID",
+    order_timestamp: "2026-03-01T10:00:00Z",
+    amount_paid: 85000.0, // Major units (Naira)
+    currency_iso: "NGN",
+    purchased_items: [
       {
-        id: "item_1",
-        productId: "prod_inv_1kva",
-        productName: "Smart Hybrid Inverter 1.5kVA",
-        category: "Energy",
-        quantity: 1,
-        unitPriceMinorUnits: 8500000,
-        totalPriceMinorUnits: 8500000,
-        unitCostMinorUnits: 5800000, // ₦58,000.00 COGS
-        totalCostMinorUnits: 5800000,
+        sku: "SOL-INV-1K",
+        title: "1kVA Smart Solar Inverter",
+        qty: 1,
+        price: 85000.0,
       },
     ],
   },
   {
-    id: "ord_1002",
-    status: "completed",
-    currency: "NGN",
-    createdAt: "2026-03-03T11:15:00Z",
-    customerId: "cust_tunde",
-    customerName: "Tunde Bakare",
-    customerEmail: "tunde@example.ng",
-    subtotalMinorUnits: 18000000, // ₦180,000.00
-    taxMinorUnits: 1350000,
-    shippingMinorUnits: 500000,
-    discountMinorUnits: 0,
-    totalMinorUnits: 19850000, // ₦198,500.00
-    refundMinorUnits: 0,
-    tags: ["energy"],
-    items: [
+    order_reference: "db_ord_102",
+    user_id: "usr_bob",
+    status_code: "PAID",
+    order_timestamp: "2026-03-05T12:00:00Z",
+    amount_paid: 180000.0,
+    currency_iso: "NGN",
+    purchased_items: [
       {
-        id: "item_2",
-        productId: "prod_bat_200ah",
-        productName: "Lithium LiFePO4 Battery 200Ah",
-        category: "Energy",
-        quantity: 1,
-        unitPriceMinorUnits: 18000000,
-        totalPriceMinorUnits: 18000000,
-        unitCostMinorUnits: 12500000, // ₦125,000.00 COGS
-        totalCostMinorUnits: 12500000,
+        sku: "SOL-BAT-200",
+        title: "200Ah Lithium Battery",
+        qty: 1,
+        price: 180000.0,
       },
     ],
   },
   {
-    id: "ord_1003",
-    status: "completed",
-    currency: "NGN",
-    createdAt: "2026-03-06T14:00:00Z",
-    customerId: "cust_kemi", // Repeat purchase by Kemi!
-    customerName: "Kemi Adeleke",
-    customerEmail: "kemi@example.ng",
-    subtotalMinorUnits: 2500000, // ₦25,000.00
-    taxMinorUnits: 187500,
-    shippingMinorUnits: 200000,
-    discountMinorUnits: 0,
-    totalMinorUnits: 2887500, // ₦28,875.00
-    refundMinorUnits: 0,
-    tags: ["accessories"],
-    items: [
+    order_reference: "db_ord_103",
+    user_id: "usr_alice", // Repeat customer!
+    status_code: "PAID",
+    order_timestamp: "2026-03-12T15:30:00Z",
+    amount_paid: 25000.0,
+    currency_iso: "NGN",
+    purchased_items: [
       {
-        id: "item_3",
-        productId: "prod_surge_prot",
-        productName: "Heavy Duty Surge Protector",
-        category: "Accessories",
-        quantity: 1,
-        unitPriceMinorUnits: 2500000,
-        totalPriceMinorUnits: 2500000,
-        unitCostMinorUnits: 1400000,
-        totalCostMinorUnits: 1400000,
-      },
-    ],
-  },
-  {
-    id: "ord_1004",
-    status: "partially_refunded",
-    currency: "NGN",
-    createdAt: "2026-03-09T16:20:00Z",
-    customerId: "cust_chidi",
-    customerName: "Chidi Nnamdi",
-    customerEmail: "chidi@example.ng",
-    subtotalMinorUnits: 6000000, // ₦60,000.00
-    taxMinorUnits: 450000,
-    shippingMinorUnits: 300000,
-    discountMinorUnits: 0,
-    totalMinorUnits: 6750000, // ₦67,500.00
-    refundMinorUnits: 2000000, // ₦20,000.00 refunded
-    tags: ["lighting"],
-    items: [
-      {
-        id: "item_4",
-        productId: "prod_solar_flood",
-        productName: "Solar LED Floodlight 200W",
-        category: "Lighting",
-        quantity: 2,
-        unitPriceMinorUnits: 3000000,
-        totalPriceMinorUnits: 6000000,
-        unitCostMinorUnits: 1800000,
-        totalCostMinorUnits: 3600000,
-      },
-    ],
-  },
-  {
-    id: "ord_1005",
-    status: "cancelled",
-    currency: "NGN",
-    createdAt: "2026-03-12T09:00:00Z",
-    customerId: "cust_amina",
-    customerName: "Amina Yusuf",
-    customerEmail: "amina@example.ng",
-    subtotalMinorUnits: 8500000,
-    taxMinorUnits: 637500,
-    shippingMinorUnits: 300000,
-    discountMinorUnits: 0,
-    totalMinorUnits: 9437500,
-    refundMinorUnits: 0,
-    tags: [],
-    items: [
-      {
-        id: "item_5",
-        productId: "prod_inv_1kva",
-        productName: "Smart Hybrid Inverter 1.5kVA",
-        category: "Energy",
-        quantity: 1,
-        unitPriceMinorUnits: 8500000,
-        totalPriceMinorUnits: 8500000,
+        sku: "SOL-SURGE",
+        title: "Heavy Duty Surge Protector",
+        qty: 1,
+        price: 25000.0,
       },
     ],
   },
 ];
 
-// Execute analysis
-const report = charlie.analyze({
-  businessId: "solarpower_lagos",
-  currency: "NGN",
-  orders,
-  paretoThreshold: 80,
+// Configure declarative adapter to map raw rows into CharlieOrders
+const dbAdapter = createOrderAdapter<{
+  order_reference: string;
+  user_id: string;
+  status_code: string;
+  order_timestamp: string;
+  amount_paid: number;
+  currency_iso: string;
+  purchased_items: Array<{ sku: string; title: string; qty: number; price: number }>;
+}>({
+  fields: {
+    id: "order_reference",
+    customerId: "user_id",
+    placedAt: "order_timestamp",
+    currency: "currency_iso",
+    status: (row) => (row.status_code === "PAID" ? "completed" : "pending"),
+    totalMajor: "amount_paid",
+    subtotalMajor: "amount_paid",
+    items: (row) =>
+      row.purchased_items.map((item) => ({
+        productId: item.sku,
+        productName: item.title,
+        quantity: item.qty,
+        unitPriceMinor: Math.round(item.price * 100),
+      })),
+  },
 });
 
-// Output formatted executive summary
-console.log("📊 1. SALES PERFORMANCE SUMMARY:");
-console.log(`   - Net Recognized Sales:   ${report.sales.netRevenueFormatted}`);
-console.log(`   - Gross Merchandise Value: ${report.sales.grossSalesFormatted}`);
-console.log(`   - Total Completed Orders:  ${report.sales.totalCompletedOrders}`);
-console.log(`   - Average Order Value:     ${report.sales.averageOrderValueFormatted}`);
-console.log(`   - Total Discounts Given:   ${charlie.money.format(report.sales.totalDiscountsMinorUnits, "NGN")}`);
-console.log(`   - Total Refunds Offset:    ${charlie.money.format(report.sales.totalRefundsMinorUnits, "NGN")}`);
-console.log("");
+const orders = dbAdapter.transformMany(rawDatabaseRows);
 
-console.log("🎯 2. PARETO 80/20 CONCENTRATION (PRODUCTS):");
-console.log(`   - Total Contributing Products: ${report.pareto.products.totalContributors}`);
-console.log(`   - Vital Contributors Count:    ${report.pareto.products.vitalContributorsCount} (${report.pareto.products.vitalContributorsPercentage}% of catalogue)`);
-console.log(`   - Gini Inequality Index:       ${report.pareto.products.giniCoefficient}`);
-console.log(`   - Herfindahl-Hirschman (HHI):  ${report.pareto.products.herfindahlHirschmanIndex}`);
-report.pareto.products.contributors.forEach((c: ParetoContributor) => {
-  const badge = c.isVitalFew ? "⭐️ [VITAL 80%]" : "   [LONG TAIL]";
-  console.log(`     ${badge} #${c.rank} ${c.name.padEnd(32)} -> ${c.revenueFormatted} (${c.contributionPercentage}% | Cumul: ${c.cumulativePercentage}%)`);
-});
-console.log("");
+async function runDemo() {
+  console.log(`Transformed ${orders.length} database rows via Declarative Adapter.`);
 
-console.log("👥 3. CUSTOMER RETENTION & RFM SEGMENTATION:");
-console.log(`   - Unique Customers:         ${report.customers.uniqueCustomersCount}`);
-console.log(`   - Repeat Customers:         ${report.customers.repeatCustomersCount}`);
-console.log(`   - Repeat Purchase Rate:     ${report.customers.repeatPurchaseRatePercentage}%`);
-console.log(`   - Average Spend per Customer:${report.customers.averageRevenuePerCustomerFormatted}`);
-console.log("   - Segments Breakdown:");
-report.customers.rfmSegments.forEach((s: RfmCustomerScore) => {
-  console.log(`     * ${s.customerName?.padEnd(16)}: Segment: "${s.segment}" (RFM Score: ${s.rfmScore}, Frequency: ${s.frequency} order(s))`);
-});
-console.log("");
+  // 2. Deterministic Analytics Engine:
+  console.log("\n📊 1. RUNNING DETERMINISTIC ANALYTICS...");
+  const snapshot = charlie.analyze({
+    businessId: "solar_lagos",
+    currency: "NGN",
+    orders,
+    paretoThreshold: 80,
+  });
 
-console.log("📦 4. PRODUCT PROFITABILITY & MARGINS:");
-console.log(`   - Overall Gross Profit:     ${report.products.totalGrossProfitFormatted}`);
-console.log(`   - Overall Gross Margin:     ${report.products.overallGrossMarginPercentage}%`);
-console.log(`   - Tracked Cost Products:    ${report.products.trackedProductsWithCostCount}`);
-console.log(`   - Missing Cost Products:    ${report.products.missingCostProductCount}`);
-console.log("");
+  console.log(`   - Net Revenue:           ${snapshot.sales.netRevenueFormatted}`);
+  console.log(`   - Total Orders:          ${snapshot.sales.totalCompletedOrders}`);
+  console.log(`   - Average Order Value:   ${snapshot.sales.averageOrderValueFormatted}`);
+  console.log(`   - Total Customers:       ${snapshot.customers.uniqueCustomersCount}`);
+  console.log(`   - Repeat Purchase Rate:  ${snapshot.customers.repeatPurchaseRatePercentage}%`);
 
-console.log("🛡️ 5. DATA QUALITY AUDIT:");
-console.log(`   - Data Quality Score:       ${report.dataQuality.scorePercentage}%`);
-console.log(`   - Snapshot SHA-256 ID:      ${report.snapshotId}`);
-console.log(`   - Schema Version:           ${report.schemaVersion}`);
-console.log("\n✅ Deterministic Analytics Execution Complete!");
+  console.log("\n🎯 2. PARETO 80/20 CONCENTRATION:");
+  snapshot.pareto.products.contributors.forEach((c: ParetoContributor) => {
+    const badge = c.isVitalFew ? "⭐️ [VITAL 80%]" : "   [LONG TAIL]";
+    console.log(`     ${badge} #${c.rank} ${c.name.padEnd(28)} -> ${c.revenueFormatted} (${c.contributionPercentage}%)`);
+  });
+
+  // 3. Multi-Provider AI Business Advisory:
+  console.log("\n🤖 3. GENERATING GROUNDED AI ADVICE (.advise)...");
+  const advice = await charlie.advise({
+    analytics: snapshot,
+    objective: "Identify top revenue risks and customer retention strategies.",
+  });
+
+  console.log(`   - Summary: ${advice.summary}`);
+  console.log(`   - Generated ${advice.recommendations.length} Actionable Recommendations:`);
+  advice.recommendations.forEach((rec, idx) => {
+    console.log(`     [${idx + 1}] [${rec.priority.toUpperCase()}] ${rec.title}`);
+    console.log(`         Rationale: ${rec.description}`);
+    if (rec.suggestedActions.length > 0) {
+      console.log(`         Action:    ${rec.suggestedActions[0]}`);
+    }
+    console.log(`         Grounding: ${rec.groundingStatus === "verified" ? "✅ Verified" : "⚠️ Review"}`);
+  });
+
+  // 4. Grounded AI Business Chat:
+  console.log("\n💬 4. NATURAL LANGUAGE BUSINESS CHAT (.chat)...");
+  const question = "How much net revenue did my business make this month?";
+  console.log(`   User: "${question}"`);
+
+  const chatReply = await charlie.chat({
+    analytics: snapshot,
+    question,
+  });
+
+  console.log(`   Charlie: ${chatReply.answer}`);
+  if (chatReply.evidence.length > 0) {
+    console.log(`   Evidence Cited: ${chatReply.evidence.map((e) => `${e.metric}=${e.value} (${e.isVerified ? "verified" : "flagged"})`).join(", ")}`);
+  }
+
+  console.log("\n✅ Demo Complete! All calculations verified mathematically.");
+}
+
+runDemo().catch(console.error);

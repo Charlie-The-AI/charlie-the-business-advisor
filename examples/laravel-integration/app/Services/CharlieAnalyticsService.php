@@ -6,72 +6,81 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use RuntimeException;
 
+/**
+ * CharlieAnalyticsService — Laravel Integration Client.
+ *
+ * Integrates an existing Laravel application with the open-source Charlie
+ * analytics engine and multi-provider AI SDK.
+ */
 class CharlieAnalyticsService
 {
-    protected string $apiKey;
     protected string $baseUrl;
-    protected string $businessId;
 
     public function __construct()
     {
-        $this->apiKey = config('services.charlie.api_key', env('CHARLIE_API_KEY', ''));
-        $this->baseUrl = rtrim(config('services.charlie.base_url', env('CHARLIE_BASE_URL', 'https://api.advisor.charlie.com')), '/');
-        $this->businessId = config('services.charlie.business_id', env('CHARLIE_BUSINESS_ID', ''));
+        // Points to your local or internal Node/Next.js Charlie service
+        $this->baseUrl = rtrim(config('services.charlie.base_url', env('CHARLIE_SERVICE_URL', 'http://localhost:3000')), '/');
     }
 
     /**
-     * Ingests a deterministic analytics snapshot into Charlie Advisory SaaS.
+     * Executes deterministic analytics on orders.
      */
-    public function ingestSnapshot(array $snapshotData): array
+    public function analyzeOrders(array $orders, array $customers = [], string $currency = 'NGN'): array
     {
-        $response = Http::withToken($this->apiKey)
-            ->acceptJson()
-            ->post("{$this->baseUrl}/api/v1/analytics/snapshots", array_merge([
-                'business_id' => $this->businessId,
-            ], $snapshotData));
+        $response = Http::acceptJson()
+            ->post("{$this->baseUrl}/api/charlie/analyze", [
+                'orders' => $orders,
+                'customers' => $customers,
+                'currency' => $currency,
+            ]);
 
         if (!$response->successful()) {
-            Log::error('Charlie snapshot ingestion failed', [
+            Log::error('Charlie analytics calculation failed', [
                 'status' => $response->status(),
-                'response' => $response->json(),
+                'body' => $response->body(),
             ]);
-            throw new RuntimeException('Failed to push snapshot to Charlie: ' . ($response->json('message') ?? $response->body()));
+            throw new RuntimeException('Failed to calculate Charlie analytics: ' . $response->body());
         }
 
-        return $response->json();
+        return $response->json('snapshot', []);
     }
 
     /**
-     * Fetches active AI growth recommendations for the configured business.
+     * Generates grounded AI recommendations for business growth.
      */
-    public function getRecommendations(): array
+    public function getAdvice(array $orders, ?string $objective = null): array
     {
-        $response = Http::withToken($this->apiKey)
-            ->acceptJson()
-            ->get("{$this->baseUrl}/api/v1/businesses/{$this->businessId}/recommendations");
+        $response = Http::acceptJson()
+            ->post("{$this->baseUrl}/api/charlie/advise", [
+                'orders' => $orders,
+                'objective' => $objective,
+            ]);
 
         if (!$response->successful()) {
-            throw new RuntimeException('Failed to fetch Charlie recommendations: ' . $response->body());
+            throw new RuntimeException('Failed to generate Charlie advice: ' . $response->body());
         }
 
         return $response->json('recommendations', []);
     }
 
     /**
-     * Ask Charlie a natural language business question.
+     * Asks Charlie a natural-language business question grounded in data.
      */
-    public function askBusinessQuestion(string $conversationId, string $question): string
+    public function askBusinessQuestion(string $question, array $orders = []): array
     {
-        $response = Http::withToken($this->apiKey)
-            ->acceptJson()
-            ->post("{$this->baseUrl}/api/v1/chat/conversations/{$conversationId}/messages", [
-                'message' => $question,
+        $response = Http::acceptJson()
+            ->post("{$this->baseUrl}/api/charlie/chat", [
+                'question' => $question,
+                'orders' => $orders,
             ]);
 
         if (!$response->successful()) {
             throw new RuntimeException('Failed to query Charlie AI Advisor: ' . $response->body());
         }
 
-        return $response->json('content', '');
+        return [
+            'answer' => $response->json('answer', ''),
+            'evidence' => $response->json('evidence', []),
+        ];
     }
 }

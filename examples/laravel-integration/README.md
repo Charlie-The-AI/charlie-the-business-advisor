@@ -1,28 +1,28 @@
 # Charlie Laravel Integration Example
 
-This example demonstrates how an existing Laravel e-commerce or SaaS platform integrates with **Charlie the Business Advisor**.
+This example demonstrates how an existing Laravel e-commerce application (such as WooCommerce, bagisto, or a custom Eloquent app) integrates with **Charlie the Business Advisor**.
 
-## Integration Architecture
+## Integration Flow
 
 ```text
-Laravel Application (Orders & Items)
+Laravel Eloquent Models (Order, OrderItem, Customer)
           │
           ▼
-Charlie Order Adapter (Major to Minor Currency, Field Mapping)
+Eloquent Serialization to CharlieOrder Array
           │
           ▼
-Analytics Snapshot Generation (Deterministic Sha-256 ID, Strict Decimal Math)
+Charlie Node/Next.js Service (Local or Internal Microservice)
           │
-          ▼
-Charlie SaaS API (`POST /api/v1/analytics/snapshots`)
-          │
-          ▼
-AI Recommendations & Conversational Chat
+          ├── POST /api/charlie/analyze  -> Deterministic Snapshot
+          ├── POST /api/charlie/advise   -> Grounded Recommendations
+          └── POST /api/charlie/chat     -> Conversational Business AI
 ```
 
-## Included Components
+## How It Works
 
-- **`CharlieAnalyticsService`** (`app/Services/CharlieAnalyticsService.php`):
-  Lightweight HTTP service client for snapshot ingestion, recommendation polling, and business chat queries.
-- **`SyncAnalyticsSnapshotCommand`** (`app/Console/Commands/SyncAnalyticsSnapshotCommand.php`):
-  Artisan command (`php artisan charlie:sync-analytics`) to run on schedule (e.g., daily at midnight via Laravel Scheduler).
+1. **`CharlieAnalyticsService`** (`app/Services/CharlieAnalyticsService.php`):
+   Sends orders to your internal Charlie endpoint (`http://localhost:3000`).
+2. **`SyncAnalyticsSnapshotCommand`** (`app/Console/Commands/SyncAnalyticsSnapshotCommand.php`):
+   Artisan command to calculate analytics snapshots on a schedule.
+
+Zero proprietary SaaS keys, zero paid subscriptions, 100% open-source.

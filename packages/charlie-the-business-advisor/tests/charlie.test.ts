@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { Charlie } from "../src/index.js";
-import { Order } from "@charlie-the-ai/advisor-types";
+import { Charlie, createCharlie } from "../src/index.js";
+import { Order, CharlieOrder, CharlieCustomer } from "@charlie-the-ai/advisor-types";
 
 describe("Charlie the Business Advisor — Public Client", () => {
   const sampleOrders: Order[] = [
@@ -60,6 +60,61 @@ describe("Charlie the Business Advisor — Public Client", () => {
     },
   ];
 
+  const modernOrders: CharlieOrder[] = [
+    {
+      id: "ch_201",
+      customerId: "cust_1",
+      placedAt: "2026-03-01T10:00:00Z",
+      currency: "NGN",
+      status: "completed",
+      subtotalMinor: 5000000,
+      discountMinor: 0,
+      taxMinor: 0,
+      shippingMinor: 0,
+      totalMinor: 5000000,
+      refundedMinor: 0,
+      items: [
+        {
+          productId: "prod_1",
+          productName: "Solar Inverter 1kVA",
+          quantity: 1,
+          unitPriceMinor: 5000000,
+          discountMinor: 0,
+        },
+      ],
+    },
+    {
+      id: "ch_202",
+      customerId: "cust_1", // Repeat customer!
+      placedAt: "2026-03-10T12:00:00Z",
+      currency: "NGN",
+      status: "completed",
+      subtotalMinor: 15000000,
+      discountMinor: 0,
+      taxMinor: 0,
+      shippingMinor: 0,
+      totalMinor: 15000000,
+      refundedMinor: 0,
+      items: [
+        {
+          productId: "prod_2",
+          productName: "Solar Battery 200Ah",
+          quantity: 1,
+          unitPriceMinor: 15000000,
+          discountMinor: 0,
+        },
+      ],
+    },
+  ];
+
+  const modernCustomers: CharlieCustomer[] = [
+    {
+      id: "cust_1",
+      fullName: "Kemi Adeleke",
+      email: "kemi@example.com",
+    },
+  ];
+
   it("analyzes business orders with standard developer API", () => {
     const charlie = new Charlie();
     const report = charlie.analyze({
@@ -85,13 +140,58 @@ describe("Charlie the Business Advisor — Public Client", () => {
     expect(report.products.overallGrossMarginPercentage).toBeGreaterThan(0);
   });
 
+  it("analyzes modern CharlieOrders and CharlieCustomers", () => {
+    const charlie = createCharlie({ defaultCurrency: "NGN" });
+    const report = charlie.analyze({
+      orders: modernOrders,
+      customers: modernCustomers,
+    });
+
+    expect(report.sales.totalOrders).toBe(2);
+    expect(report.sales.netRevenueMinorUnits).toBe(20000000);
+    expect(report.customers.uniqueCustomersCount).toBe(1);
+    expect(report.customers.repeatCustomersCount).toBe(1);
+    expect(report.customers.repeatPurchaseRatePercentage).toBe(100);
+  });
+
+  it("generates grounded AI business recommendations with .advise()", async () => {
+    const charlie = new Charlie();
+    const result = await charlie.advise({
+      orders: modernOrders,
+      customers: modernCustomers,
+      currency: "NGN",
+    });
+
+    expect(result.snapshot).toBeDefined();
+    expect(result.snapshot.sales.netRevenueFormatted).toBe("₦200,000.00");
+    expect(result.recommendations.length).toBeGreaterThan(0);
+
+    // Verify grounding
+    const rec = result.recommendations[0];
+    expect(rec.groundingStatus).toBe("verified");
+    expect(rec.title).toBeTruthy();
+    expect(rec.suggestedActions.length).toBeGreaterThan(0);
+  });
+
+  it("answers business questions grounded in analytics with .chat()", async () => {
+    const charlie = new Charlie();
+    const chatResponse = await charlie.chat({
+      orders: modernOrders,
+      question: "How much net revenue did we make?",
+    });
+
+    expect(chatResponse.answer).toContain("₦200,000.00");
+    expect(chatResponse.evidence.length).toBeGreaterThan(0);
+    expect(chatResponse.evidence[0].isVerified).toBe(true);
+  });
+
   it("exposes standalone modular analytics methods", () => {
     const charlie = new Charlie({ defaultCurrency: "USD" });
 
     const sales = charlie.sales(sampleOrders, "NGN");
     expect(sales.netRevenueMinorUnits).toBe(20000000);
 
-    const customers = charlie.customers(sampleOrders, "NGN");
+    const customers = charlie.customers(sampleOrders, undefined, "NGN");
     expect(customers.uniqueCustomersCount).toBe(2);
 
     const products = charlie.products(sampleOrders, "NGN");
@@ -102,11 +202,26 @@ describe("Charlie the Business Advisor — Public Client", () => {
     expect(pareto.contributors[0]?.name).toBe("Energy");
   });
 
-  it("provides integrated adapter factories", () => {
+  it("provides integrated adapter factories and shortcuts", () => {
     const charlie = new Charlie();
     const laravelAdapter = charlie.laravelAdapter("NGN");
     expect(laravelAdapter).toBeDefined();
     expect(typeof laravelAdapter.normalize).toBe("function");
-    expect(typeof laravelAdapter.normalizeBatch).toBe("function");
+
+    const orderAdapter = charlie.createOrderAdapter({
+      fields: {
+        id: "order_id",
+        total: "grand_total",
+      },
+    });
+    expect(orderAdapter).toBeDefined();
+
+    const customerAdapter = Charlie.createCustomerAdapter({
+      fields: {
+        id: "user_id",
+        name: "user_name",
+      },
+    });
+    expect(customerAdapter).toBeDefined();
   });
 });

@@ -1,1 +1,1 @@
-{"root":["./src/charlie.ts","./src/index.ts"],"version":"5.9.3"}
+{"root":["./src/charlie.ts","./src/index.ts","./src/bin/cli.ts"],"version":"5.9.3"}

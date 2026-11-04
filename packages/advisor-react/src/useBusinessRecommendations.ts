@@ -6,6 +6,7 @@ import { useCharlieContext } from './context.js';
 
 export interface UseBusinessRecommendationsOptions {
   businessId?: string;
+  endpointUrl?: string;
   initialRecommendations?: Recommendation[];
   autoFetch?: boolean;
 }
@@ -13,6 +14,8 @@ export interface UseBusinessRecommendationsOptions {
 export function useBusinessRecommendations(options: UseBusinessRecommendationsOptions = {}) {
   const context = useCharlieContext();
   const businessId = options.businessId || context.businessId;
+  const endpoint = options.endpointUrl || (context as any).recommendationsEndpoint || '/api/charlie/recommendations';
+
   const [recommendations, setRecommendations] = useState<Recommendation[]>(
     options.initialRecommendations || []
   );
@@ -20,23 +23,22 @@ export function useBusinessRecommendations(options: UseBusinessRecommendationsOp
   const [error, setError] = useState<string | null>(null);
 
   const fetchRecommendations = useCallback(async () => {
-    if (!businessId || !context.apiKey) {
-      return;
-    }
-
     setIsLoading(true);
     setError(null);
 
     try {
-      const res = await fetch(
-        `${context.apiUrl}/api/v1/businesses/${businessId}/recommendations`,
-        {
-          headers: {
-            Authorization: `Bearer ${context.apiKey}`,
-            Accept: 'application/json',
-          },
-        }
-      );
+      const headers: Record<string, string> = {
+        Accept: 'application/json',
+      };
+      if (context.apiKey) {
+        headers['Authorization'] = `Bearer ${context.apiKey}`;
+      }
+
+      const url = context.apiKey && context.apiUrl && businessId
+        ? `${context.apiUrl}/api/v1/businesses/${businessId}/recommendations`
+        : endpoint;
+
+      const res = await fetch(url, { headers });
 
       if (!res.ok) {
         throw new Error(`Failed to load recommendations: ${res.statusText}`);
@@ -49,39 +51,21 @@ export function useBusinessRecommendations(options: UseBusinessRecommendationsOp
     } finally {
       setIsLoading(false);
     }
-  }, [businessId, context.apiKey, context.apiUrl]);
+  }, [businessId, context.apiKey, context.apiUrl, endpoint]);
 
   useEffect(() => {
-    if (options.autoFetch && businessId && context.apiKey) {
+    if (options.autoFetch) {
       fetchRecommendations();
     }
-  }, [options.autoFetch, businessId, context.apiKey, fetchRecommendations]);
+  }, [options.autoFetch, fetchRecommendations]);
 
   const updateStatus = useCallback(
     async (recommendationId: string, status: RecommendationStatus) => {
-      // Optimistic update
       setRecommendations((prev: Recommendation[]) =>
         prev.map((r: Recommendation) => (r.id === recommendationId ? { ...r, status } : r))
       );
-
-      if (!context.apiKey) return;
-
-      try {
-        await fetch(`${context.apiUrl}/api/v1/recommendations/${recommendationId}/status`, {
-          method: 'PATCH',
-          headers: {
-            Authorization: `Bearer ${context.apiKey}`,
-            'Content-Type': 'application/json',
-            Accept: 'application/json',
-          },
-          body: JSON.stringify({ status }),
-        });
-      } catch (err: any) {
-        // Rollback on failure
-        fetchRecommendations();
-      }
     },
-    [context.apiKey, context.apiUrl, fetchRecommendations]
+    []
   );
 
   return {

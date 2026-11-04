@@ -7,13 +7,21 @@ export interface ChatMessageItem {
   id: string;
   role: 'user' | 'assistant' | 'system';
   content: string;
-  citations?: Array<{ metric: string; value: string | number }>;
+  citations?: Array<{ metric: string; value: string | number; isVerified?: boolean }>;
   createdAt: string;
 }
 
 export interface UseAdvisorChatOptions {
+  apiEndpoint?: string;
   conversationId?: string;
   initialMessages?: ChatMessageItem[];
+  sendFn?: (
+    question: string,
+    history: Array<{ role: 'user' | 'assistant' | 'system'; content: string }>
+  ) => Promise<{
+    answer: string;
+    evidence?: Array<{ metric: string; value: string | number; isVerified?: boolean }>;
+  }>;
 }
 
 export function useAdvisorChat(options: UseAdvisorChatOptions = {}) {
@@ -22,9 +30,10 @@ export function useAdvisorChat(options: UseAdvisorChatOptions = {}) {
   const [isSending, setIsSending] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
+  const endpoint = options.apiEndpoint || (context as any).apiEndpoint || '/api/charlie/chat';
+
   const sendMessage = useCallback(
-    async (text: string, conversationId?: string) => {
-      const activeConvoId = conversationId || options.conversationId;
+    async (text: string) => {
       if (!text.trim()) return;
 
       const userMsg: ChatMessageItem = {
@@ -34,60 +43,60 @@ export function useAdvisorChat(options: UseAdvisorChatOptions = {}) {
         createdAt: new Date().toISOString(),
       };
 
-      setMessages((prev: ChatMessageItem[]) => [...prev, userMsg]);
+      const updatedHistory = [...messages, userMsg];
+      setMessages(updatedHistory);
       setIsSending(true);
       setError(null);
 
-      if (!activeConvoId || !context.apiKey) {
-        // Fallback simulated response if no backend connection
-        setTimeout(() => {
-          const aiReply: ChatMessageItem = {
+      try {
+        if (options.sendFn) {
+          const res = await options.sendFn(
+            text,
+            messages.map((m) => ({ role: m.role, content: m.content }))
+          );
+          const aiMsg: ChatMessageItem = {
             id: `ai_${Date.now()}`,
             role: 'assistant',
-            content: `I received your question: "${text}". Connect a valid Charlie API key to query your live business analytics.`,
+            content: res.answer,
+            citations: res.evidence || [],
             createdAt: new Date().toISOString(),
           };
-          setMessages((prev: ChatMessageItem[]) => [...prev, aiReply]);
-          setIsSending(false);
-        }, 300);
-        return;
-      }
-
-      try {
-        const res = await fetch(
-          `${context.apiUrl}/api/v1/chat/conversations/${activeConvoId}/messages`,
-          {
+          setMessages((prev) => [...prev, aiMsg]);
+        } else {
+          const res = await fetch(endpoint, {
             method: 'POST',
             headers: {
-              Authorization: `Bearer ${context.apiKey}`,
               'Content-Type': 'application/json',
               Accept: 'application/json',
             },
-            body: JSON.stringify({ message: text }),
+            body: JSON.stringify({
+              question: text,
+              history: messages.map((m) => ({ role: m.role, content: m.content })),
+            }),
+          });
+
+          if (!res.ok) {
+            throw new Error(`Failed to send message: ${res.statusText}`);
           }
-        );
 
-        if (!res.ok) {
-          throw new Error(`Failed to send message: ${res.statusText}`);
+          const data = await res.json();
+          const aiMsg: ChatMessageItem = {
+            id: data.id || `ai_${Date.now()}`,
+            role: 'assistant',
+            content: data.answer || data.content || '',
+            citations: data.evidence || data.citations || [],
+            createdAt: data.createdAt || new Date().toISOString(),
+          };
+
+          setMessages((prev) => [...prev, aiMsg]);
         }
-
-        const data = await res.json();
-        const aiMsg: ChatMessageItem = {
-          id: data.id || `ai_${Date.now()}`,
-          role: 'assistant',
-          content: data.content,
-          citations: data.citations || [],
-          createdAt: data.created_at || new Date().toISOString(),
-        };
-
-        setMessages((prev: ChatMessageItem[]) => [...prev, aiMsg]);
       } catch (err: any) {
         setError(err.message || 'Error sending chat message');
       } finally {
         setIsSending(false);
       }
     },
-    [context.apiKey, context.apiUrl, options.conversationId]
+    [endpoint, messages, options]
   );
 
   const clearMessages = useCallback(() => {

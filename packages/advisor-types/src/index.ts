@@ -7,3 +7,6 @@ export * from "./period.js";
 export * from "./analytics.js";
 export * from "./snapshot.js";
 export * from "./recommendation.js";
+export * from "./charlie-order.js";
+export * from "./charlie-customer.js";
+export * from "./datasets.js";

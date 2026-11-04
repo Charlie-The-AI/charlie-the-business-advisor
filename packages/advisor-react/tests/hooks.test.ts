@@ -1,6 +1,17 @@
 import { describe, it, expect } from 'vitest';
-import type { Order } from '@charlie-the-ai/advisor-types';
+import type { Order, CharlieOrder } from '@charlie-the-ai/advisor-types';
 import { calculateSalesSummary, calculatePareto, extractParetoInputsFromOrders } from '@charlie-the-ai/analytics-core';
+import {
+  useBusinessAnalytics,
+  useCharlieAnalytics,
+  useAdvisorChat,
+  useBusinessRecommendations,
+  RevenueCard,
+  RecommendationCard,
+  CustomerSegments,
+  TopProductsChart,
+  MetricBadge,
+} from '../src/index.js';
 
 describe('Advisor React Library & Core Interop', () => {
   const mockOrders: Order[] = [
@@ -77,5 +88,17 @@ describe('Advisor React Library & Core Interop', () => {
     expect(pareto.contributors[0].id).toBe('prod_1');
     expect(pareto.contributors[0].contributionPercentage).toBe(80);
     expect(pareto.contributors[0].isVitalFew).toBe(true);
+  });
+
+  it('exports accessible components and hooks for modern React apps', () => {
+    expect(typeof RevenueCard).toBe('function');
+    expect(typeof RecommendationCard).toBe('function');
+    expect(typeof CustomerSegments).toBe('function');
+    expect(typeof TopProductsChart).toBe('function');
+    expect(typeof MetricBadge).toBe('function');
+    expect(typeof useBusinessAnalytics).toBe('function');
+    expect(typeof useCharlieAnalytics).toBe('function');
+    expect(typeof useAdvisorChat).toBe('function');
+    expect(typeof useBusinessRecommendations).toBe('function');
   });
 });

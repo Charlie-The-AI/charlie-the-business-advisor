@@ -1,14 +1,16 @@
 import {
   Order,
+  CharlieOrder,
   ProductAnalytics,
   ProductPerformanceItem,
   CategoryPerformanceItem,
   CurrencyCode,
 } from "@charlie-the-ai/advisor-types";
 import { Money } from "./money.js";
+import { ensureCharlieOrders } from "./normalize.js";
 
 export interface CalculateProductOptions {
-  orders: Order[];
+  orders: (Order | CharlieOrder)[];
   currency: CurrencyCode;
 }
 
@@ -32,7 +34,8 @@ interface CategoryAccumulator {
  * Calculates deterministic product and category analytics.
  */
 export function calculateProductAnalytics(options: CalculateProductOptions): ProductAnalytics {
-  const { orders, currency } = options;
+  const { currency } = options;
+  const orders = ensureCharlieOrders(options.orders);
 
   const productMap = new Map<string, ProductAccumulator>();
   const categoryMap = new Map<string, CategoryAccumulator>();
@@ -47,16 +50,15 @@ export function calculateProductAnalytics(options: CalculateProductOptions): Pro
     }
 
     for (const item of order.items) {
+      const itemRev = Money.multiply(item.unitPriceMinor, item.quantity);
       totalUnitsSold += item.quantity;
-      totalRevenueMinorUnits = Money.add(totalRevenueMinorUnits, item.totalPriceMinorUnits);
+      totalRevenueMinorUnits = Money.add(totalRevenueMinorUnits, itemRev);
 
       // Product tracking
       const pKey = item.productId;
       const existingProduct = productMap.get(pKey);
-      const hasItemCost = item.unitCostMinorUnits !== undefined || item.totalCostMinorUnits !== undefined;
-      const itemCost =
-        item.totalCostMinorUnits ??
-        (item.unitCostMinorUnits ? Money.multiply(item.unitCostMinorUnits, item.quantity) : 0);
+      const hasItemCost = item.unitCostMinor !== undefined;
+      const itemCost = item.unitCostMinor ? Money.multiply(item.unitCostMinor, item.quantity) : 0;
 
       if (!existingProduct) {
         totalProductsSold++;
@@ -65,7 +67,7 @@ export function calculateProductAnalytics(options: CalculateProductOptions): Pro
           productName: item.productName,
           category: item.category || "Uncategorized",
           unitsSold: item.quantity,
-          revenueMinorUnits: item.totalPriceMinorUnits,
+          revenueMinorUnits: itemRev,
           totalCostMinorUnits: itemCost,
           hasCost: hasItemCost,
         });
@@ -73,7 +75,7 @@ export function calculateProductAnalytics(options: CalculateProductOptions): Pro
         existingProduct.unitsSold += item.quantity;
         existingProduct.revenueMinorUnits = Money.add(
           existingProduct.revenueMinorUnits,
-          item.totalPriceMinorUnits
+          itemRev
         );
         if (hasItemCost) {
           existingProduct.totalCostMinorUnits = Money.add(
@@ -92,13 +94,13 @@ export function calculateProductAnalytics(options: CalculateProductOptions): Pro
         categoryMap.set(catKey, {
           category: catKey,
           unitsSold: item.quantity,
-          revenueMinorUnits: item.totalPriceMinorUnits,
+          revenueMinorUnits: itemRev,
         });
       } else {
         existingCat.unitsSold += item.quantity;
         existingCat.revenueMinorUnits = Money.add(
           existingCat.revenueMinorUnits,
-          item.totalPriceMinorUnits
+          itemRev
         );
       }
     }

@@ -11,7 +11,7 @@
     "build": "pnpm -r --filter='./packages/*' run build",
     "test": "pnpm -r --filter='./packages/*' run test",
     "test:watch": "pnpm -r --filter='./packages/*' run test:watch",
-    "typecheck": "pnpm -r --filter='./packages/*' run typecheck",
+    "typecheck": "pnpm build && pnpm -r --filter='./packages/*' run typecheck",
     "lint": "pnpm -r --filter='./packages/*' run lint",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
     "clean": "pnpm -r exec rm -rf dist node_modules .turbo"

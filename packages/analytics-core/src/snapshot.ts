@@ -1,6 +1,9 @@
 import {
   AnalyticsSnapshot,
   Order,
+  CharlieOrder,
+  Customer,
+  CharlieCustomer,
   CurrencyCode,
   DataQualityReport,
 } from "@charlie-the-ai/advisor-types";
@@ -9,6 +12,7 @@ import { calculatePareto, extractParetoInputsFromOrders } from "./pareto.js";
 import { calculateCustomerAnalytics } from "./customers.js";
 import { calculateProductAnalytics } from "./products.js";
 import { calculateTrends } from "./trends.js";
+import { ensureCharlieOrders, ensureCharlieCustomers } from "./normalize.js";
 
 export interface CreateSnapshotOptions {
   businessId: string;
@@ -18,8 +22,9 @@ export interface CreateSnapshotOptions {
     to: string;
     timezone?: string;
   };
-  orders: Order[];
-  previousPeriodOrders?: Order[];
+  orders: (Order | CharlieOrder)[];
+  customers?: (Customer | CharlieCustomer)[];
+  previousPeriodOrders?: (Order | CharlieOrder)[];
   paretoThreshold?: number;
 }
 
@@ -31,10 +36,14 @@ export function createAnalyticsSnapshot(options: CreateSnapshotOptions): Analyti
     businessId,
     currency,
     period,
-    orders,
-    previousPeriodOrders,
     paretoThreshold = 80,
   } = options;
+
+  const orders = ensureCharlieOrders(options.orders);
+  const customersList = ensureCharlieCustomers(options.customers);
+  const previousPeriodOrders = options.previousPeriodOrders
+    ? ensureCharlieOrders(options.previousPeriodOrders)
+    : undefined;
 
   // 1. Calculate Sales
   const sales = calculateSalesSummary({
@@ -73,6 +82,7 @@ export function createAnalyticsSnapshot(options: CreateSnapshotOptions): Analyti
   // 3. Calculate Customer Metrics
   const customers = calculateCustomerAnalytics({
     orders,
+    customers: customersList,
     currency,
     referenceDate: new Date(period.to),
   });
@@ -98,12 +108,12 @@ export function createAnalyticsSnapshot(options: CreateSnapshotOptions): Analyti
   let totalRecordsEvaluated = orders.length;
 
   for (const o of orders) {
-    if (!o.customerId && !o.customerEmail) {
+    if (!o.customerId) {
       missingCustomerCount++;
     }
     for (const item of o.items) {
       totalRecordsEvaluated++;
-      if (item.unitCostMinorUnits === undefined && item.totalCostMinorUnits === undefined) {
+      if (item.unitCostMinor === undefined) {
         missingCostItemsCount++;
       }
     }
@@ -113,7 +123,7 @@ export function createAnalyticsSnapshot(options: CreateSnapshotOptions): Analyti
     missingFields.push("customerId");
   }
   if (missingCostItemsCount > 0) {
-    missingFields.push("unitCostMinorUnits");
+    missingFields.push("unitCostMinor");
     warnings.push(
       `${missingCostItemsCount} order line item(s) lacked cost information. Gross profit calculations reflect only tracked items.`
     );

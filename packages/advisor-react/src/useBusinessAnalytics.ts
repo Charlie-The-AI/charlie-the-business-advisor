@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo } from 'react';
-import type { Order, CurrencyCode, AnalyticsSnapshot } from '@charlie-the-ai/advisor-types';
+import type { Order, CharlieOrder, Customer, CharlieCustomer, CurrencyCode, AnalyticsSnapshot } from '@charlie-the-ai/advisor-types';
 import { createAnalyticsSnapshot } from '@charlie-the-ai/analytics-core';
 import { useCharlieContext } from './context.js';
 
@@ -10,15 +10,16 @@ export interface UseBusinessAnalyticsOptions {
   timezone?: string;
   paretoThresholdPercentage?: number;
   businessId?: string;
+  customers?: (Customer | CharlieCustomer)[];
   period?: {
     from?: string;
     to?: string;
   };
-  previousPeriodOrders?: Order[];
+  previousPeriodOrders?: (Order | CharlieOrder)[];
 }
 
 export function useBusinessAnalytics(
-  orders: Order[],
+  orders: (Order | CharlieOrder)[],
   options: UseBusinessAnalyticsOptions = {}
 ) {
   const context = useCharlieContext();
@@ -41,20 +42,26 @@ export function useBusinessAnalytics(
       };
     }
 
-    const sorted = [...orders].sort(
-      (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-    );
+    const sorted = [...orders].sort((a, b) => {
+      const timeA = new Date('placedAt' in a ? a.placedAt : a.createdAt).getTime();
+      const timeB = new Date('placedAt' in b ? b.placedAt : b.createdAt).getTime();
+      return timeA - timeB;
+    });
     const firstOrder = sorted[0];
     const lastOrder = sorted[sorted.length - 1];
 
-    const from = options.period?.from || firstOrder?.createdAt || new Date().toISOString();
-    const to = options.period?.to || lastOrder?.createdAt || new Date().toISOString();
+    const firstTime = firstOrder ? ('placedAt' in firstOrder ? firstOrder.placedAt : firstOrder.createdAt) : new Date().toISOString();
+    const lastTime = lastOrder ? ('placedAt' in lastOrder ? lastOrder.placedAt : lastOrder.createdAt) : new Date().toISOString();
+
+    const from = options.period?.from || firstTime;
+    const to = options.period?.to || lastTime;
 
     const snapshot: AnalyticsSnapshot = createAnalyticsSnapshot({
       businessId,
       currency,
       period: { from, to, timezone },
       orders,
+      customers: options.customers,
       previousPeriodOrders: options.previousPeriodOrders,
       paretoThreshold: threshold,
     });
@@ -73,6 +80,7 @@ export function useBusinessAnalytics(
     orders,
     currency,
     businessId,
+    options.customers,
     options.previousPeriodOrders,
     threshold,
     timezone,
@@ -82,3 +90,8 @@ export function useBusinessAnalytics(
 
   return analytics;
 }
+
+/**
+ * Convenient alias for useBusinessAnalytics.
+ */
+export const useCharlieAnalytics = useBusinessAnalytics;

@@ -1,116 +1,208 @@
 # Charlie the Business Advisor 🎩📈
 
-> **Open-Source Business Analytics Engine & Developer SDK**
+> **Your AI-Powered Business Growth Companion — 100% Free & Fully Open-Source**
 >
-> Deterministic business intelligence, Pareto (80/20) concentration analysis, RFM customer segmentation, and financial metrics in TypeScript.
+> Deterministic business intelligence, Pareto (80/20) concentration analysis, customer RFM segmentation, and multi-provider AI business advisory with mathematical grounding verification.
 
-[![CI](https://github.com/charlie/charlie-the-business-advisor/actions/workflows/ci.yml/badge.svg)](https://github.com/charlie/charlie-the-business-advisor/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![npm version](https://img.shields.io/npm/v/charlie-the-business-advisor.svg)](https://www.npmjs.com/package/charlie-the-business-advisor)
+[![Documentation](https://img.shields.io/badge/docs-charlie--business--docs.vercel.app-blueviolet.svg)](https://charlie-business-docs.vercel.app/)
+[![Node.js Support](https://img.shields.io/badge/Node.js-%3E%3D18.0.0-brightgreen.svg)](https://nodejs.org)
+
+> 📖 **Official Documentation & Live Interactive Demos:** [https://charlie-business-docs.vercel.app/](https://charlie-business-docs.vercel.app/)
 
 ---
 
-## Overview
+## 💡 The Core Principle
 
-**Charlie the Business Advisor** is a framework-agnostic TypeScript analytics engine. It runs in any environment (Node.js, browsers, Next.js, Edge runtimes, mobile apps) with **zero cloud dependencies** and **no mandatory external services**.
+> **"Analytics calculates. AI interprets. Evidence validates."**
 
-Key capabilities:
-- **Deterministic Financial Analytics**: Integer minor-unit arithmetic prevents floating-point rounding errors across sales, revenues, and discounts.
-- **Pareto Concentration Diagnostics**: Compute 80/20 revenue concentration curves across products, categories, and customer cohorts.
-- **RFM Customer Segmentation**: Segment customer bases into Champions, Loyal, At-Risk, and Inactive cohorts with actionable thresholds.
-- **Framework Adapters**: Transform disparate data schemas (Eloquent, Postgres, CSV, JSON) into standardized, typed analytics snapshots.
-- **React UI Integration**: React 18 & 19 hooks and visualization components for building dashboards with minimal boilerplate.
+LLMs are probabilistic and notoriously unreliable at calculating financial numbers. Charlie enforces an uncompromising architectural boundary:
+1. **Analytics calculates**: The TypeScript engine computes 100% of the financial numbers using deterministic integer arithmetic (minor currency units).
+2. **AI interprets**: Your chosen AI model (OpenAI, Gemini, Claude, or offline Mock) receives verified numbers to identify strategic business opportunities.
+3. **Evidence validates**: Charlie mathematically verifies every claim cited by the AI against the calculated snapshot before returning it to your application.
 
 ---
 
-## Packages in This Monorepo
+## ⚡ 5-Minute Quickstart
 
-| Package | npm Package | Description | README |
-| :--- | :--- | :--- | :--- |
-| **`charlie-the-business-advisor`** | [`charlie-the-business-advisor`](https://www.npmjs.com/package/charlie-the-business-advisor) | Unified developer entry point and high-level client | [Docs](packages/charlie-the-business-advisor/README.md) |
-| **`packages/analytics-core`** | [`@charlie-the-ai/analytics-core`](https://www.npmjs.com/package/@charlie-the-ai/analytics-core) | Pure deterministic analytics engine and algorithms | [Docs](packages/analytics-core/README.md) |
-| **`packages/advisor-types`** | [`@charlie-the-ai/advisor-types`](https://www.npmjs.com/package/@charlie-the-ai/advisor-types) | Zod schemas and TypeScript data contracts | [Docs](packages/advisor-types/README.md) |
-| **`packages/analytics-adapters`**| [`@charlie-the-ai/analytics-adapters`](https://www.npmjs.com/package/@charlie-the-ai/analytics-adapters) | Data normalization adapters for databases and APIs | [Docs](packages/analytics-adapters/README.md) |
-| **`packages/advisor-react`** | [`@charlie-the-ai/advisor-react`](https://www.npmjs.com/package/@charlie-the-ai/advisor-react) | React 18/19 hooks and UI components for web apps | [Docs](packages/advisor-react/README.md) |
-
----
-
-## Quick Start
-
-### Installation
+### 1. Install
 
 ```bash
-# Unified package (includes types, core, and adapters)
 npm install charlie-the-business-advisor
-
-# Or install individual modular packages:
-npm install @charlie-the-ai/analytics-core @charlie-the-ai/advisor-types
 ```
 
-### Basic Usage
+### 2. Run in 3 Lines of Code
 
 ```typescript
-import { Charlie, type Order } from 'charlie-the-business-advisor';
+import { Charlie } from "charlie-the-business-advisor";
 
-const charlie = new Charlie({
-  defaultCurrency: 'USD',
-  businessId: 'biz_01',
-});
+// 1. Initialize (runs 100% offline out-of-the-box!)
+const charlie = new Charlie({ defaultCurrency: "USD" });
 
-const orders: Order[] = [
-  {
-    id: 'ord_101',
-    customerId: 'cust_abc',
-    status: 'completed',
-    totalAmount: 19900, // $199.00 in minor units (cents)
-    currency: 'USD',
-    createdAt: '2026-03-15T10:00:00Z',
-    items: [
-      {
-        id: 'item_1',
-        productId: 'prod_1',
-        productName: 'Annual Subscription',
-        quantity: 1,
-        unitPrice: 19900,
-        totalPrice: 19900,
-      },
-    ],
-  },
-];
-
+// 2. Deterministic Financial Analytics
 const snapshot = charlie.analyze({ orders });
+console.log(`Net Revenue: ${snapshot.sales.netRevenueFormatted}`);
 
-console.log('Snapshot ID:', snapshot.snapshotId);
-console.log('Net Revenue:', snapshot.sales.netRevenueFormatted);  // "$199.00"
-console.log('Order Count:', snapshot.sales.totalOrders);         // 1
-console.log('Vital Products (80/20):', snapshot.pareto.products.vitalFewCount);
+// 3. Grounded AI Business Recommendations
+const advice = await charlie.advise({ analytics: snapshot });
+console.log(advice.recommendations[0].title);
+
+// 4. Natural Language Business Chat
+const reply = await charlie.chat({ question: "What is my best selling product?", analytics: snapshot });
+console.log(reply.answer);
 ```
 
 ---
 
-## Integration Examples
+## 📦 Monorepo Architecture & Packages
 
-Explore working sample applications in [`examples/`](examples/):
-- **[`examples/nodejs-integration`](examples/nodejs-integration/)**: REST API processing transaction feeds with Express and Charlie.
-- **[`examples/nextjs-integration`](examples/nextjs-integration/)**: Next.js App Router app using `@charlie-the-ai/advisor-react` hooks and Pareto visualizations.
-- **[`examples/laravel-integration`](examples/laravel-integration/)**: Exporting Laravel Eloquent transactions to Charlie analytics snapshots.
+Install the umbrella package `charlie-the-business-advisor` or use individual modular subpackages:
 
----
-
-## Documentation
-
-- [Getting Started Guide](docs/getting-started/README.md)
-- [Framework Integration Guides](docs/integrations/README.md)
-- [Architecture & Decimal Arithmetic Decisions](docs/architecture/ARCHITECTURE.md)
+| Package | npm Package | Description | Documentation |
+|---|---|---|---|
+| **Umbrella SDK** | [`charlie-the-business-advisor`](https://www.npmjs.com/package/charlie-the-business-advisor) | High-level client, developer CLI, and unified entry point | [Guide](https://charlie-business-docs.vercel.app/docs/quick-start) |
+| **Dataset Contracts** | [`@charlie-the-ai/advisor-types`](https://www.npmjs.com/package/@charlie-the-ai/advisor-types) | Canonical schemas (`CharlieOrder`, `CharlieCustomer`) & validation | [Docs](https://charlie-business-docs.vercel.app/docs/datasets/orders) |
+| **Analytics Engine** | [`@charlie-the-ai/analytics-core`](https://www.npmjs.com/package/@charlie-the-ai/analytics-core) | Pure deterministic math: Sales, Pareto 80/20, RFM, Margins, Snapshots | [Docs](https://charlie-business-docs.vercel.app/docs/analytics/revenue) |
+| **Database Adapters**| [`@charlie-the-ai/analytics-adapters`](https://www.npmjs.com/package/@charlie-the-ai/analytics-adapters) | Zero-database-change field mappings & batch error isolation | [Docs](https://charlie-business-docs.vercel.app/docs/adapters/overview) |
+| **Multi-Provider AI** | [`@charlie-the-ai/advisor-ai`](https://www.npmjs.com/package/@charlie-the-ai/advisor-ai) | OpenAI, Gemini, Claude, Mock provider & grounding verification | [Docs](https://charlie-business-docs.vercel.app/docs/ai/overview) |
+| **React UI Components** | [`@charlie-the-ai/advisor-react`](https://www.npmjs.com/package/@charlie-the-ai/advisor-react) | Accessible dashboard cards (`RevenueCard`, `ParetoChart`) & hooks | [Docs](https://charlie-business-docs.vercel.app/docs/frameworks/react) |
 
 ---
 
-## Contributing
+## 🤖 Multi-Provider AI (Bring Your Own Key)
 
-We welcome community contributions! Please review [CONTRIBUTING.md](CONTRIBUTING.md) and our [Code Guidelines](CONTRIBUTING.md#code-guidelines).
+Charlie works with your existing AI keys or runs **completely offline**:
+
+```env
+# Optional — leave blank to run in 100% offline Mock mode
+CHARLIE_AI_PROVIDER=openai     # "openai" | "gemini" | "anthropic" | "mock"
+OPENAI_API_KEY=sk-...
+GEMINI_API_KEY=AIza...
+ANTHROPIC_API_KEY=sk-ant-...
+```
+
+- **Zero Cloud Lock-in**: No Charlie account, no license keys, no monthly fees.
+- **Privacy by Default**: Customer names and personal emails are never transmitted to external AI providers by default.
+- **Hallucination Defense**: If an AI hallucinates a non-existent revenue number, Charlie automatically marks the recommendation as `flagged`.
 
 ---
 
-## License
+## 🔌 Database Adapters (Zero Schema Changes)
 
-[MIT](LICENSE) © 2026 Charlie the Business Advisor Contributors
+Adapt your existing database tables into Charlie's canonical datasets in seconds:
+
+```typescript
+import { createOrderAdapter } from "charlie-the-business-advisor";
+
+const adapter = createOrderAdapter({
+  fields: {
+    id: "invoice_no",
+    customerId: "client_id",
+    placedAt: "created_at",
+    status: (row) => (row.is_paid ? "completed" : "pending"),
+    totalMajor: "dollar_amount", // Automatically converted to minor unit integers
+    items: (row) => row.items.map(it => ({
+      productId: it.sku,
+      productName: it.name,
+      quantity: it.qty,
+      unitPriceMinor: Math.round(it.price * 100),
+    })),
+  },
+});
+
+const orders = adapter.transformMany(rawDatabaseRows);
+```
+
+---
+
+## 🛠️ Developer CLI
+
+Scaffold your project configuration in one command:
+
+```bash
+# Initialize charlie.config.ts and .env.example
+npx charlie-the-business-advisor init
+
+# Check environment diagnostics and provider status
+npx charlie-the-business-advisor doctor
+```
+
+---
+
+## 🎨 React Dashboard Integration
+
+Embed pre-built dashboard components in your React or Next.js 15 App Router application:
+
+```tsx
+'use client';
+
+import {
+  useCharlieAnalytics,
+  RevenueCard,
+  ParetoChart,
+  CustomerSegments,
+  TopProductsChart,
+} from "@charlie-the-ai/advisor-react";
+
+export function Dashboard({ orders }) {
+  const { sales, pareto, customers, products, hasData } = useCharlieAnalytics(orders, {
+    currency: "USD",
+  });
+
+  if (!hasData) return <div>No data available</div>;
+
+  return (
+    <div>
+      <RevenueCard sales={sales} />
+      <TopProductsChart products={products} />
+      <CustomerSegments customers={customers} />
+      <ParetoChart contributors={pareto.contributors} targetThresholdPercentage={80} />
+    </div>
+  );
+}
+```
+
+---
+
+## 📚 Complete Documentation
+
+- **Getting Started**:
+  - [5-Minute Quickstart](docs/getting-started/quickstart.md)
+  - [Core Concepts & Philosophy](docs/getting-started/core-concepts.md)
+  - [Installation Guide](docs/getting-started/installation.md)
+- **Datasets**:
+  - [CharlieOrder Specification](docs/datasets/charlie-order.md)
+  - [CharlieCustomer Specification](docs/datasets/charlie-customer.md)
+  - [Canonical Datasets Roadmap](docs/datasets/roadmap.md)
+- **Database Adapters**:
+  - [Adapters Overview](docs/adapters/overview.md)
+  - [Declarative Field Mapping](docs/adapters/declarative-mapping.md)
+  - [Custom Transform Functions & Error Handling](docs/adapters/custom-transform.md)
+  - [Laravel Eloquent & SQL Guide](docs/adapters/eloquent.md)
+- **Analytics Engine**:
+  - [Sales & Deterministic Metrics](docs/analytics/sales-metrics.md)
+  - [Pareto 80/20 & Concentration Analysis](docs/analytics/pareto-80-20.md)
+  - [Customer RFM Segmentation](docs/analytics/rfm-segmentation.md)
+  - [Product Margins & Performance](docs/analytics/product-performance.md)
+  - [Snapshots & SHA-256 Fingerprints](docs/analytics/snapshots.md)
+- **AI & Grounding**:
+  - [AI Providers (OpenAI, Gemini, Claude, Mock)](docs/ai/providers.md)
+  - [Grounding Verification & Hallucination Defense](docs/ai/grounding-verification.md)
+  - [Conversational Business Chat](docs/ai/chat.md)
+- **Framework Integrations**:
+  - [Node.js & Express](docs/frameworks/nodejs.md)
+  - [NestJS](docs/frameworks/nestjs.md)
+  - [Next.js 15 App Router](docs/frameworks/nextjs.md)
+  - [React UI Components & Hooks](docs/frameworks/react.md)
+  - [Laravel](docs/frameworks/laravel.md)
+- **Reference**:
+  - [Troubleshooting & Common Issues](docs/troubleshooting.md)
+  - [Frequently Asked Questions (FAQ)](docs/faq.md)
+  - [Glossary of Terms](docs/glossary.md)
+
+---
+
+## 📄 License
+
+MIT © Charlie the Business Advisor Contributors. Completely free and open-source.

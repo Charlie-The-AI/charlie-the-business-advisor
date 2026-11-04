@@ -1,6 +1,6 @@
 {
   "name": "@charlie-the-ai/advisor-types",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Shared TypeScript data contracts, domain models, and Zod schemas for Charlie the Business Advisor",
   "type": "module",
   "main": "./dist/index.js",
@@ -36,12 +36,15 @@
   "scripts": {
     "build": "tsc -b",
     "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "clean": "rm -rf dist"
   },
   "dependencies": {
     "zod": "^3.24.2"
   },
   "devDependencies": {
-    "typescript": "^5.8.2"
+    "typescript": "^5.8.2",
+    "vitest": "^3.0.7"
   }
 }

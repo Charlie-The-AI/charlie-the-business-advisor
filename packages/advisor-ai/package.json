@@ -1,0 +1,55 @@
+{
+  "name": "@charlie-the-ai/advisor-ai",
+  "version": "0.2.0",
+  "description": "Multi-provider AI business advisory SDK for Charlie the Business Advisor (OpenAI, Gemini, Claude)",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/charlie/charlie-the-business-advisor.git",
+    "directory": "packages/advisor-ai"
+  },
+  "keywords": [
+    "charlie",
+    "ai",
+    "business-advisor",
+    "openai",
+    "gemini",
+    "anthropic",
+    "grounding",
+    "business-intelligence"
+  ],
+  "scripts": {
+    "build": "tsc -b",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@charlie-the-ai/advisor-types": "workspace:*",
+    "@charlie-the-ai/analytics-core": "workspace:*",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.10",
+    "typescript": "^5.8.2",
+    "vitest": "^3.0.7"
+  }
+}

@@ -1,10 +1,17 @@
-import { Order, SalesSummary, PeriodicSalesPoint, CurrencyCode } from "@charlie-the-ai/advisor-types";
+import {
+  Order,
+  CharlieOrder,
+  SalesSummary,
+  PeriodicSalesPoint,
+  CurrencyCode,
+} from "@charlie-the-ai/advisor-types";
 import { Money } from "./money.js";
+import { ensureCharlieOrders } from "./normalize.js";
 
 export interface CalculateSalesOptions {
-  orders: Order[];
+  orders: (Order | CharlieOrder)[];
   currency: CurrencyCode;
-  previousPeriodOrders?: Order[];
+  previousPeriodOrders?: (Order | CharlieOrder)[];
   granularity?: "day" | "week" | "month";
 }
 
@@ -12,7 +19,11 @@ export interface CalculateSalesOptions {
  * Calculates deterministic sales analytics from standardized orders.
  */
 export function calculateSalesSummary(options: CalculateSalesOptions): SalesSummary {
-  const { orders, currency, previousPeriodOrders, granularity = "day" } = options;
+  const { currency, granularity = "day" } = options;
+  const orders = ensureCharlieOrders(options.orders);
+  const previousPeriodOrders = options.previousPeriodOrders
+    ? ensureCharlieOrders(options.previousPeriodOrders)
+    : undefined;
 
   let grossSalesMinorUnits = 0;
   let netRevenueMinorUnits = 0;
@@ -36,18 +47,18 @@ export function calculateSalesSummary(options: CalculateSalesOptions): SalesSumm
     switch (order.status) {
       case "completed": {
         totalCompletedOrders++;
-        const netOrderRevenue = Money.subtract(order.totalMinorUnits, order.refundMinorUnits ?? 0);
+        const netOrderRevenue = Money.subtract(order.totalMinor, order.refundedMinor ?? 0);
         netRevenueMinorUnits = Money.add(netRevenueMinorUnits, netOrderRevenue);
-        grossSalesMinorUnits = Money.add(grossSalesMinorUnits, order.subtotalMinorUnits);
-        totalDiscountsMinorUnits = Money.add(totalDiscountsMinorUnits, order.discountMinorUnits ?? 0);
-        totalTaxMinorUnits = Money.add(totalTaxMinorUnits, order.taxMinorUnits ?? 0);
-        totalShippingMinorUnits = Money.add(totalShippingMinorUnits, order.shippingMinorUnits ?? 0);
-        totalRefundsMinorUnits = Money.add(totalRefundsMinorUnits, order.refundMinorUnits ?? 0);
+        grossSalesMinorUnits = Money.add(grossSalesMinorUnits, order.subtotalMinor);
+        totalDiscountsMinorUnits = Money.add(totalDiscountsMinorUnits, order.discountMinor ?? 0);
+        totalTaxMinorUnits = Money.add(totalTaxMinorUnits, order.taxMinor ?? 0);
+        totalShippingMinorUnits = Money.add(totalShippingMinorUnits, order.shippingMinor ?? 0);
+        totalRefundsMinorUnits = Money.add(totalRefundsMinorUnits, order.refundedMinor ?? 0);
 
         // Periodic breakdown
-        const periodKey = extractPeriodKey(order.createdAt, granularity);
+        const periodKey = extractPeriodKey(order.placedAt, granularity);
         const existing = periodicMap.get(periodKey) ?? { gross: 0, net: 0, count: 0 };
-        existing.gross = Money.add(existing.gross, order.subtotalMinorUnits);
+        existing.gross = Money.add(existing.gross, order.subtotalMinor);
         existing.net = Money.add(existing.net, netOrderRevenue);
         existing.count++;
         periodicMap.set(periodKey, existing);
@@ -56,17 +67,17 @@ export function calculateSalesSummary(options: CalculateSalesOptions): SalesSumm
 
       case "partially_refunded": {
         totalCompletedOrders++;
-        const netOrderRevenue = Money.subtract(order.totalMinorUnits, order.refundMinorUnits ?? 0);
+        const netOrderRevenue = Money.subtract(order.totalMinor, order.refundedMinor ?? 0);
         netRevenueMinorUnits = Money.add(netRevenueMinorUnits, netOrderRevenue);
-        grossSalesMinorUnits = Money.add(grossSalesMinorUnits, order.subtotalMinorUnits);
-        totalDiscountsMinorUnits = Money.add(totalDiscountsMinorUnits, order.discountMinorUnits ?? 0);
-        totalTaxMinorUnits = Money.add(totalTaxMinorUnits, order.taxMinorUnits ?? 0);
-        totalShippingMinorUnits = Money.add(totalShippingMinorUnits, order.shippingMinorUnits ?? 0);
-        totalRefundsMinorUnits = Money.add(totalRefundsMinorUnits, order.refundMinorUnits ?? 0);
+        grossSalesMinorUnits = Money.add(grossSalesMinorUnits, order.subtotalMinor);
+        totalDiscountsMinorUnits = Money.add(totalDiscountsMinorUnits, order.discountMinor ?? 0);
+        totalTaxMinorUnits = Money.add(totalTaxMinorUnits, order.taxMinor ?? 0);
+        totalShippingMinorUnits = Money.add(totalShippingMinorUnits, order.shippingMinor ?? 0);
+        totalRefundsMinorUnits = Money.add(totalRefundsMinorUnits, order.refundedMinor ?? 0);
 
-        const periodKey = extractPeriodKey(order.createdAt, granularity);
+        const periodKey = extractPeriodKey(order.placedAt, granularity);
         const existing = periodicMap.get(periodKey) ?? { gross: 0, net: 0, count: 0 };
-        existing.gross = Money.add(existing.gross, order.subtotalMinorUnits);
+        existing.gross = Money.add(existing.gross, order.subtotalMinor);
         existing.net = Money.add(existing.net, netOrderRevenue);
         existing.count++;
         periodicMap.set(periodKey, existing);
@@ -75,7 +86,7 @@ export function calculateSalesSummary(options: CalculateSalesOptions): SalesSumm
 
       case "refunded": {
         totalRefundedOrders++;
-        totalRefundsMinorUnits = Money.add(totalRefundsMinorUnits, order.totalMinorUnits);
+        totalRefundsMinorUnits = Money.add(totalRefundsMinorUnits, order.totalMinor);
         break;
       }
 
@@ -125,7 +136,7 @@ export function calculateSalesSummary(options: CalculateSalesOptions): SalesSumm
     for (const prevOrder of previousPeriodOrders) {
       if (prevOrder.status === "completed" || prevOrder.status === "partially_refunded") {
         prevCompletedOrders++;
-        const netPrev = Money.subtract(prevOrder.totalMinorUnits, prevOrder.refundMinorUnits ?? 0);
+        const netPrev = Money.subtract(prevOrder.totalMinor, prevOrder.refundedMinor ?? 0);
         prevNetRevenue = Money.add(prevNetRevenue, netPrev);
       }
     }

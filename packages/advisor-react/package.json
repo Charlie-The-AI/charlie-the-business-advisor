@@ -1,6 +1,6 @@
 {
   "name": "@charlie-the-ai/advisor-react",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "React hooks and accessible components for Charlie the Business Advisor",
   "type": "module",
   "main": "./dist/index.js",

@@ -1,6 +1,6 @@
 {
   "name": "@charlie-the-ai/analytics-adapters",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Data mapping and normalization adapters for Charlie the Business Advisor",
   "type": "module",
   "main": "./dist/index.js",
@@ -40,8 +40,7 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@charlie-the-ai/advisor-types": "workspace:*",
-    "@charlie-the-ai/analytics-core": "workspace:*"
+    "@charlie-the-ai/advisor-types": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5.8.2",

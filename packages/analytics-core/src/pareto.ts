@@ -4,8 +4,10 @@ import {
   ParetoContributor,
   CurrencyCode,
   Order,
+  CharlieOrder,
 } from "@charlie-the-ai/advisor-types";
 import { Money } from "./money.js";
+import { ensureCharlieOrders } from "./normalize.js";
 
 export interface ParetoItemInput {
   id: string;
@@ -58,64 +60,62 @@ export function calculatePareto(options: CalculateParetoOptions): ParetoResult {
 
   let cumulativeRevenue = 0;
   let vitalCount = 0;
-  let reachedThreshold = false;
+  const contributors: ParetoContributor[] = [];
 
-  const contributors: ParetoContributor[] = sorted.map((item, index) => {
+  for (let i = 0; i < sorted.length; i++) {
+    const item = sorted[i]!;
     cumulativeRevenue = Money.add(cumulativeRevenue, item.revenueMinorUnits);
 
-    const contributionPct =
+    const contributionPercentage =
       totalRevenueMinorUnits > 0
         ? Math.round((item.revenueMinorUnits / totalRevenueMinorUnits) * 10000) / 100
         : 0;
 
-    const cumulativePct =
+    const cumulativePercentage =
       totalRevenueMinorUnits > 0
         ? Math.min(100, Math.round((cumulativeRevenue / totalRevenueMinorUnits) * 10000) / 100)
         : 0;
 
-    let isVitalFew = false;
-    if (!reachedThreshold) {
-      isVitalFew = true;
+    // Item is part of vital few until cumulative threshold is crossed
+    const isVital =
+      cumulativePercentage <= thresholdPercentage ||
+      (vitalCount === 0 && sorted.length > 0) ||
+      (contributors.length > 0 && contributors[contributors.length - 1]!.cumulativePercentage < thresholdPercentage);
+
+    if (isVital) {
       vitalCount++;
-      if (cumulativePct >= thresholdPercentage) {
-        reachedThreshold = true;
-      }
     }
 
-    return {
+    contributors.push({
       id: item.id,
       name: item.name,
       revenueMinorUnits: item.revenueMinorUnits,
       revenueFormatted: Money.format(item.revenueMinorUnits, currency),
-      contributionPercentage: contributionPct,
-      cumulativePercentage: cumulativePct,
-      rank: index + 1,
-      isVitalFew,
-    };
-  });
+      contributionPercentage,
+      cumulativePercentage,
+      rank: i + 1,
+      isVitalFew: isVital,
+    });
+  }
 
-  const totalContributors = contributors.length;
-  const vitalContributorsPercentage =
-    totalContributors > 0
-      ? Math.round((vitalCount / totalContributors) * 10000) / 100
-      : 0;
+  const vitalPercentage =
+    sorted.length > 0 ? Math.round((vitalCount / sorted.length) * 10000) / 100 : 0;
 
-  // Calculate Gini Coefficient
+  // Gini coefficient
   const gini = calculateGiniCoefficient(sorted.map((i) => i.revenueMinorUnits));
 
-  // Calculate Herfindahl-Hirschman Index (HHI)
-  // HHI = sum of (market_share_percentage)^2
-  const hhi = Math.round(
-    contributors.reduce((acc, c) => acc + Math.pow(c.contributionPercentage, 2), 0)
-  );
+  // Herfindahl-Hirschman Index (HHI) for market concentration
+  const hhi = contributors.reduce((acc, curr) => {
+    return acc + Math.pow(curr.contributionPercentage, 2);
+  }, 0);
 
   return {
     dimension,
     thresholdPercentage,
     totalRevenueMinorUnits,
-    totalContributors,
+    totalContributors: sorted.length,
     vitalContributorsCount: vitalCount,
-    vitalContributorsPercentage,
+    vitalContributorsPercentage: vitalPercentage,
     giniCoefficient: gini,
     herfindahlHirschmanIndex: Math.min(10000, hhi),
     contributors,
@@ -126,9 +126,10 @@ export function calculatePareto(options: CalculateParetoOptions): ParetoResult {
  * Derives Pareto input from Orders for a given dimension.
  */
 export function extractParetoInputsFromOrders(
-  orders: Order[],
+  rawOrders: (Order | CharlieOrder)[],
   dimension: ParetoDimension
 ): ParetoItemInput[] {
+  const orders = ensureCharlieOrders(rawOrders);
   const map = new Map<string, { id: string; name: string; revenue: number }>();
 
   for (const order of orders) {
@@ -137,26 +138,27 @@ export function extractParetoInputsFromOrders(
     }
 
     if (dimension === "customer") {
-      const customerId = order.customerId || (order.customerEmail ? `email:${order.customerEmail}` : null);
+      const customerId = order.customerId;
       if (!customerId) {
         continue;
       }
-      const customerName = order.customerName || order.customerEmail || `Customer ${customerId}`;
-      const netOrderRev = Money.subtract(order.totalMinorUnits, order.refundMinorUnits ?? 0);
+      const customerName = `Customer ${customerId}`;
+      const netOrderRev = Money.subtract(order.totalMinor, order.refundedMinor ?? 0);
       const existing = map.get(customerId) ?? { id: customerId, name: customerName, revenue: 0 };
       existing.revenue = Money.add(existing.revenue, netOrderRev);
       map.set(customerId, existing);
     } else {
       for (const item of order.items) {
+        const itemRev = Money.multiply(item.unitPriceMinor, item.quantity);
         if (dimension === "product") {
           const key = item.productId;
           const existing = map.get(key) ?? { id: key, name: item.productName, revenue: 0 };
-          existing.revenue = Money.add(existing.revenue, item.totalPriceMinorUnits);
+          existing.revenue = Money.add(existing.revenue, itemRev);
           map.set(key, existing);
         } else if (dimension === "category") {
           const key = item.category || "Uncategorized";
           const existing = map.get(key) ?? { id: key, name: key, revenue: 0 };
-          existing.revenue = Money.add(existing.revenue, item.totalPriceMinorUnits);
+          existing.revenue = Money.add(existing.revenue, itemRev);
           map.set(key, existing);
         }
       }

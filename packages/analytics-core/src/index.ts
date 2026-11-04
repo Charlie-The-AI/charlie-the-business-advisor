@@ -5,3 +5,4 @@ export * from "./customers.js";
 export * from "./products.js";
 export * from "./trends.js";
 export * from "./snapshot.js";
+export * from "./normalize.js";

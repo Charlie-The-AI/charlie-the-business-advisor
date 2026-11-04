@@ -1,6 +1,6 @@
 {
   "name": "@charlie-the-ai/advisor-ai",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Multi-provider AI business advisory SDK for Charlie the Business Advisor (OpenAI, Gemini, Claude)",
   "type": "module",
   "main": "./dist/index.js",
